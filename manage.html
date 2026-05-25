@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Your Booking | Wycliffe Travels</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background-color: #f9f9f9; padding: 20px; margin: 0; }
+    .container { max-width: 520px; margin: 0 auto; background: white; padding: 32px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .logo { width: 140px; margin-bottom: 20px; }
+    h2 { color: #2c3e50; margin: 0 0 24px; font-size: 22px; }
+
+    /* Lookup section */
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 5px; }
+    input[type="text"], input[type="email"], input[type="date"] {
+        width: 100%; padding: 11px 14px; border: 1px solid #ddd;
+        border-radius: 6px; font-size: 14px; font-family: inherit;
+        transition: border-color 0.2s;
+    }
+    input:focus { outline: none; border-color: #4a90e2; }
+
+    .btn {
+        width: 100%; padding: 12px; border: none; border-radius: 6px;
+        cursor: pointer; font-weight: 600; font-size: 14px;
+        font-family: inherit; margin-top: 6px; transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn-primary   { background-color: #2c3e50; color: white; }
+    .btn-cancel    { background-color: #e74c3c; color: white; }
+    .btn-reschedule{ background-color: #f39c12; color: white; }
+    .btn-confirm   { background-color: #27ae60; color: white; }
+    .btn-back      { background-color: #95a5a6; color: white; }
+
+    /* Booking summary card */
+    .booking-card {
+        background: #f4f8ff; border: 1px solid #d0e3ff;
+        border-radius: 8px; padding: 18px; margin: 20px 0;
+    }
+    .booking-card h3 { margin: 0 0 12px; font-size: 16px; color: #2c3e50; }
+    .booking-card .field { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+    .booking-card .field span:first-child { color: #777; }
+    .booking-card .field span:last-child  { font-weight: 600; color: #2c3e50; }
+    .status-badge {
+        display: inline-block; padding: 2px 10px; border-radius: 20px;
+        font-size: 12px; font-weight: 600;
+    }
+    .status-CONFIRMED   { background: #d4edda; color: #155724; }
+    .status-CANCELLED   { background: #f8d7da; color: #721c24; }
+    .status-RESCHEDULED { background: #fff3cd; color: #856404; }
+
+    /* Action buttons row */
+    .action-row { display: flex; gap: 10px; margin-top: 4px; }
+    .action-row .btn { margin-top: 0; }
+
+    /* Sections */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Confirm panel */
+    .confirm-panel {
+        background: #fff8e1; border: 1px solid #ffe082;
+        border-radius: 8px; padding: 16px; margin: 16px 0;
+        font-size: 14px; color: #5d4037;
+    }
+    .confirm-panel strong { display: block; margin-bottom: 6px; font-size: 15px; }
+
+    /* Reschedule panel */
+    .reschedule-panel { margin: 16px 0; }
+
+    .divider { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+    .error { color: #e74c3c; font-size: 13px; margin-top: 8px; display: none; }
+    .success-msg { text-align: center; padding: 24px 0; }
+    .success-msg .checkmark { font-size: 48px; }
+    .success-msg h3 { color: #27ae60; margin: 10px 0 6px; }
+    .success-msg p { color: #666; font-size: 14px; }
+
+    .logo-container {
+    text-align: center; /* Centers the image */
+    margin-bottom: 20px;
+}
+
+.logo {
+    display: inline-block; /* Helps ensure text-align works */
+    width: 140px;          /* Keep your existing size */
+}
+    h2 {
+    color: #2c3e50;
+    margin: 0 0 24px;
+    font-size: 22px;
+    text-align: center; /* This centers the text */
+}
+  </style>
+</head>
+<body>
+<script src="/config.js"></script>
+
+<div class="container">
+  <div class="logo-container">
+  <img src="https://clay-tech-public-assets.s3.us-east-1.amazonaws.com/Wycliffe+Travels+Logo.png" alt="Logo" class="logo">
+  </div>
+  <h2>Manage Your Booking</h2>
+
+  <!-- STEP 1: Lookup -->
+  <div id="stepLookup" class="section active">
+    <div class="form-group">
+      <label for="inputId">Booking Reference</label>
+      <input type="text" id="inputId" placeholder="e.g. BKG-20260522-A1B9">
+    </div>
+    <div class="form-group">
+      <label for="inputEmail">Email Address</label>
+      <input type="email" id="inputEmail" placeholder="email used at booking">
+    </div>
+    <button class="btn btn-primary" onclick="fetchBooking()">Find My Booking</button>
+    <div id="lookupError" class="error"></div>
+  </div>
+
+  <!-- STEP 2: Booking summary + action choice -->
+  <div id="stepSummary" class="section">
+    <div class="booking-card">
+      <h3>Your Booking</h3>
+      <div class="field"><span>Reference</span><span id="summaryId"></span></div>
+      <div class="field"><span>Name</span><span id="summaryName"></span></div>
+      <div class="field"><span>Email</span><span id="summaryEmail"></span></div>
+      <div class="field"><span>Tour</span><span id="summaryTour"></span></div>
+      <div class="field"><span>Date</span><span id="summaryDate"></span></div>
+      <div class="field"><span>Guests</span><span id="summaryGuests"></span></div>
+      <div class="field"><span>Price per guest</span><span id="summaryPricePerGuest"></span></div>
+      <div class="field"><span>Total Cost</span><span id="summaryTotalCost"></span></div>
+      <div class="field"><span>Status</span><span id="summaryStatus"></span></div>
+    </div>
+    <hr class="divider">
+    <p style="font-size:14px; color:#555; margin-bottom:12px;">What would you like to do?</p>
+    <div class="action-row">
+      <button class="btn btn-reschedule" onclick="showReschedule()">Reschedule</button>
+      <button class="btn btn-cancel" onclick="showCancel()">Cancel Booking</button>
+    </div>
+    <button class="btn btn-back" style="margin-top:10px;" onclick="goBack('stepLookup', 'stepSummary')">← Back</button>
+  </div>
+
+  <!-- STEP 3a: Confirm cancel -->
+  <div id="stepConfirmCancel" class="section">
+    <div class="confirm-panel">
+      <strong>⚠️ Cancel this booking?</strong>
+      You are about to cancel your booking. Based on our refund policy, cancellations
+      made at least 24 hours in advance qualify for an 80% refund.
+      This action cannot be undone.
+    </div>
+    <button class="btn btn-cancel" onclick="performAction('cancel')">Yes, Cancel My Booking</button>
+    <button class="btn btn-back" style="margin-top:10px;" onclick="goBack('stepSummary', 'stepConfirmCancel')">← Back</button>
+    <div id="cancelError" class="error"></div>
+  </div>
+
+  <!-- STEP 3b: Reschedule date picker -->
+  <div id="stepReschedule" class="section">
+    <div class="reschedule-panel">
+      <div class="form-group">
+        <label for="newDate">Select a New Date</label>
+        <input type="date" id="newDate">
+      </div>
+    </div>
+    <button class="btn btn-confirm" onclick="performAction('reschedule')">Confirm New Date</button>
+    <button class="btn btn-back" style="margin-top:10px;" onclick="goBack('stepSummary', 'stepReschedule')">← Back</button>
+    <div id="rescheduleError" class="error"></div>
+  </div>
+
+  <!-- STEP 4: Success -->
+  <div id="stepSuccess" class="section">
+    <div class="success-msg">
+      <div class="checkmark">✅</div>
+      <h3 id="successTitle">Done!</h3>
+      <p id="successMessage"></p>
+      <button class="btn btn-primary" style="margin-top:20px;" onclick="resetForm()">Manage Another Booking</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = window.ENV?.CDN_DOMAIN || "";
+
+  let currentBooking = null;
+
+  function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+  }
+
+  function goBack(showId, hideId) {
+      showSection(showId);
+  }
+
+  async function fetchBooking() {
+
+      const btn = event.target;
+      const originalText = btn.innerText;
+
+      // 2. Disable the button and show "Loading" state
+      btn.disabled = true;
+      btn.innerText = "Searching for booking...";
+
+      const id    = document.getElementById('inputId').value.trim();
+      const email = document.getElementById('inputEmail').value.trim();
+      const errorEl = document.getElementById('lookupError');
+      errorEl.style.display = 'none';
+
+      if (!id || !email) {
+          errorEl.innerText = "Please enter both a booking reference and email.";
+          errorEl.style.display = 'block';
+          return;
+      }
+
+      const response = await fetch(
+          `${API_BASE}/booking?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}`
+      );
+
+      if (response.ok) {
+          currentBooking = await response.json();
+          populateSummary(currentBooking);
+          showSection('stepSummary');
+      } else if (response.status === 404) {
+          errorEl.innerText = "Booking not found. Please check your reference and email.";
+          errorEl.style.display = 'block';
+      } else {
+          errorEl.innerText = "Something went wrong. Please try again.";
+          errorEl.style.display = 'block';
+      }
+  }
+function formatCurrency(amount, currency) {
+    if (!amount) return '-';
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currency || 'USD'
+    }).format(amount);
+}
+  function populateSummary(booking) {
+      document.getElementById('summaryId').innerText    = booking.bookingId || '-';
+      document.getElementById('summaryTour').innerText  = booking.tourName  || '-';
+      document.getElementById('summaryDate').innerText  = formatDate(booking.startTime);
+      document.getElementById('summaryGuests').innerText= booking.attendeeQuantity || '-';
+      document.getElementById('summaryName').innerText= booking.attendeeName || '-';
+      document.getElementById('summaryPricePerGuest').innerText = formatCurrency(booking.officialPrice, booking.currency);
+      document.getElementById('summaryTotalCost').innerText = formatCurrency(booking.totalPrice, booking.currency);
+      document.getElementById('summaryEmail').innerText= booking.attendeeEmail || '-';
+
+      const status = booking.status || 'CONFIRMED';
+      const badge  = `<span class="status-badge status-${status}">${status}</span>`;
+      document.getElementById('summaryStatus').innerHTML = badge;
+
+      // Set min date for reschedule picker to tomorrow
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.getElementById('newDate').min = tomorrow.toISOString().split('T')[0];
+  }
+
+  function formatDate(isoString) {
+    if (!isoString) return '-';
+    // Split to ensure we ignore time components and prevent local offset shifts
+    const [year, month, day] = isoString.split('T')[0].split('-');
+    const d = new Date(Date.UTC(year, month - 1, day));
+
+    return d.toLocaleDateString('en-US', {
+        timeZone: 'UTC',
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+}
+
+  function showCancel() {
+      showSection('stepConfirmCancel');
+  }
+
+  function showReschedule() {
+      showSection('stepReschedule');
+  }
+
+  async function performAction(action) {
+      //1. Get reference to the clicked button (e.g., if you add an 'id' to your buttons)
+      // For now, let's target the button by action type or a specific ID
+      const btn = event.target;
+      const originalText = btn.innerText;
+
+      // 2. Disable the button and show "Loading" state
+      btn.disabled = true;
+      btn.innerText = "Processing...";
+
+      const id           = document.getElementById('inputId').value.trim();
+      const email        = document.getElementById('inputEmail').value.trim();
+      const newStartTime = document.getElementById('newDate').value;
+      const errorElId    = action === 'cancel' ? 'cancelError' : 'rescheduleError';
+      const errorEl      = document.getElementById(errorElId);
+      errorEl.style.display = 'none';
+
+      if (action === 'reschedule' && !newStartTime) {
+          errorEl.innerText = "Please select a new date.";
+          errorEl.style.display = 'block';
+          return;
+      }
+
+      const url = `${API_BASE}/booking?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}&action=${action}&newStartTime=${encodeURIComponent(newStartTime)}`;
+      const response = await fetch(url, { method: 'POST' });
+
+      if (response.ok) {
+          document.getElementById('successTitle').innerText =
+              action === 'cancel' ? 'Booking Cancelled' : 'Booking Rescheduled';
+          document.getElementById('successMessage').innerText =
+              action === 'cancel'
+                  ? 'Your booking has been cancelled. A confirmation email will be sent shortly.'
+                  : `Your booking has been rescheduled to ${formatDate(newStartTime)}. A confirmation email will be sent shortly.`;
+          showSection('stepSuccess');
+      } else {
+          errorEl.innerText = `Action failed (${response.status}). Please try again.`;
+          errorEl.style.display = 'block';
+      }
+  }
+
+  function resetForm() {
+      currentBooking = null;
+      document.getElementById('inputId').value    = '';
+      document.getElementById('inputEmail').value = '';
+      document.getElementById('newDate').value    = '';
+      showSection('stepLookup');
+  }
+</script>
+</body>
+</html>
