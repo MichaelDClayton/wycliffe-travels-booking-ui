@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Payment Successful — Wycliffe Travels</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #000;
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: #0d0d0d;
+    border: 1px solid #1f1f1f;
+    border-radius: 16px;
+    max-width: 480px;
+    width: 100%;
+    padding: 48px 32px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+  .logo { width: 180px; height: auto; margin: 0 auto 24px; display: block; }
+  .check {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: #16a34a;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    animation: pop 0.4s ease-out;
+  }
+  .check svg { width: 40px; height: 40px; stroke: #fff; stroke-width: 3; fill: none; }
+  @keyframes pop {
+    0% { transform: scale(0); }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  h1 {
+    font-size: 28px;
+    color: #f5c518;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  p { color: #b8b8b8; font-size: 15px; line-height: 1.6; margin-bottom: 8px; }
+  .order {
+    margin: 28px 0;
+    padding: 16px;
+    background: #161616;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #888;
+  }
+  .order strong { color: #fff; display: block; margin-top: 4px; font-size: 15px; letter-spacing: 1px; }
+  .btn {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 14px 32px;
+    background: #f5c518;
+    color: #000;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .btn:hover { background: #ffd633; transform: translateY(-1px); }
+  .footer { margin-top: 24px; font-size: 12px; color: #555; }
+</style>
+</head>
+<body>
+  <main class="card">
+    <img src="https://clay-tech-public-assets.s3.us-east-1.amazonaws.com/Wycliffe+Travels+Logo.png" alt="Wycliffe Travels — Safari & Tour" class="logo" />
+    <div class="check">
+      <svg viewBox="0 0 24 24"><polyline points="4 12 10 18 20 6"></polyline></svg>
+    </div>
+    <h1>Payment Successful</h1>
+    <p>Thank you for booking with Wycliffe Travels.</p>
+    <p>A confirmation email with your tour details is on its way.</p>
+
+    <div class="order">
+      Booking Reference
+      <strong id="ref">—</strong>
+    </div>
+
+    <a href="/" class="btn">Checkout our social media page for more adventures!</a>
+
+    <p class="footer">Karibu Kenya — your adventure awaits.</p>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const bookingReference = params.get('bookingReference');
+    if (bookingReference) {
+      document.getElementById('ref').textContent = bookingReference.toUpperCase();
+    } else {
+      document.getElementById('ref').textContent = 'CONFIRMED';
+    }
+  </script>
+</body>
+</html>
