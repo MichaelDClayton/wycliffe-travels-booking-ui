@@ -5,10 +5,19 @@ const tourSelect = document.getElementById('tourSelect');
 const submitBtn = document.querySelector('button[type="submit"]');
 const loadingStatus = document.getElementById('loadingStatus');
 
+
+
+
+
 // 2. Wrap your execution to ensure it runs when the page is ready
 document.addEventListener('DOMContentLoaded', () => {
+//Force Calendar to 7 days out!
+const today = new Date();
+//add 7 days.
+today.setDate(today.getDate() + 7);
+const formattedDate = today.toISOString().split('T')[0];
     // Set minimum date to today so users cannot book in the past
-    dateInput.setAttribute('min', new Date().toISOString().split('T')[0]);
+    dateInput.setAttribute('min', formattedDate);
     fetchAvailableTours();
 });
 

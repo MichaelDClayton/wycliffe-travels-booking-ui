@@ -176,7 +176,6 @@
     </div>
   </div>
 </div>
-
 <script>
   const API_BASE = window.ENV?.CDN_DOMAIN || "";
 
@@ -189,14 +188,19 @@
 
   function goBack(showId, hideId) {
       showSection(showId);
+      // If returning to the lookup step, ensure the search button is always reset
+      if (showId === 'stepLookup') {
+          const lookupBtn = document.querySelector('#stepLookup .btn-primary');
+          if (lookupBtn) {
+              lookupBtn.disabled = false;
+              lookupBtn.innerText = 'Find My Booking';
+          }
+      }
   }
 
   async function fetchBooking() {
-
       const btn = event.target;
       const originalText = btn.innerText;
-
-      // 2. Disable the button and show "Loading" state
       btn.disabled = true;
       btn.innerText = "Searching for booking...";
 
@@ -208,23 +212,30 @@
       if (!id || !email) {
           errorEl.innerText = "Please enter both a booking reference and email.";
           errorEl.style.display = 'block';
+          btn.disabled = false;
+          btn.innerText = originalText;
           return;
       }
 
-      const response = await fetch(
-          `${API_BASE}/booking?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}`
-      );
+      try {
+          const response = await fetch(
+              `${API_BASE}/booking?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}`
+          );
 
-      if (response.ok) {
-          currentBooking = await response.json();
-          populateSummary(currentBooking);
-          showSection('stepSummary');
-      } else if (response.status === 404) {
-          errorEl.innerText = "Booking not found. Please check your reference and email.";
-          errorEl.style.display = 'block';
-      } else {
-          errorEl.innerText = "Something went wrong. Please try again.";
-          errorEl.style.display = 'block';
+          if (response.ok) {
+              currentBooking = await response.json();
+              populateSummary(currentBooking);
+              showSection('stepSummary');
+          } else if (response.status === 404) {
+              errorEl.innerText = "Booking not found. Please check your reference and email.";
+              errorEl.style.display = 'block';
+          } else {
+              errorEl.innerText = "Something went wrong. Please try again.";
+              errorEl.style.display = 'block';
+          }
+      } finally {
+          btn.disabled = false;
+          btn.innerText = originalText;
       }
   }
 function formatCurrency(amount, currency) {
@@ -250,7 +261,7 @@ function formatCurrency(amount, currency) {
 
       // Set min date for reschedule picker to tomorrow
       const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setDate(tomorrow.getDate() + 7);
       document.getElementById('newDate').min = tomorrow.toISOString().split('T')[0];
   }
 
@@ -278,12 +289,8 @@ function formatCurrency(amount, currency) {
   }
 
   async function performAction(action) {
-      //1. Get reference to the clicked button (e.g., if you add an 'id' to your buttons)
-      // For now, let's target the button by action type or a specific ID
       const btn = event.target;
       const originalText = btn.innerText;
-
-      // 2. Disable the button and show "Loading" state
       btn.disabled = true;
       btn.innerText = "Processing...";
 
@@ -297,23 +304,30 @@ function formatCurrency(amount, currency) {
       if (action === 'reschedule' && !newStartTime) {
           errorEl.innerText = "Please select a new date.";
           errorEl.style.display = 'block';
+          btn.disabled = false;
+          btn.innerText = originalText;
           return;
       }
 
-      const url = `${API_BASE}/booking?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}&action=${action}&newStartTime=${encodeURIComponent(newStartTime)}`;
-      const response = await fetch(url, { method: 'POST' });
+      try {
+          const url = `${API_BASE}/booking?id=${encodeURIComponent(id)}&email=${encodeURIComponent(email)}&action=${action}&newStartTime=${encodeURIComponent(newStartTime)}`;
+          const response = await fetch(url, { method: 'POST' });
 
-      if (response.ok) {
-          document.getElementById('successTitle').innerText =
-              action === 'cancel' ? 'Booking Cancelled' : 'Booking Rescheduled';
-          document.getElementById('successMessage').innerText =
-              action === 'cancel'
-                  ? 'Your booking has been cancelled. A confirmation email will be sent shortly.'
-                  : `Your booking has been rescheduled to ${formatDate(newStartTime)}. A confirmation email will be sent shortly.`;
-          showSection('stepSuccess');
-      } else {
-          errorEl.innerText = `Action failed (${response.status}). Please try again.`;
-          errorEl.style.display = 'block';
+          if (response.ok) {
+              document.getElementById('successTitle').innerText =
+                  action === 'cancel' ? 'Booking Cancelled' : 'Booking Rescheduled';
+              document.getElementById('successMessage').innerText =
+                  action === 'cancel'
+                      ? 'Your booking has been cancelled. A confirmation email will be sent shortly.'
+                      : `Your booking has been rescheduled to ${formatDate(newStartTime)}. A confirmation email will be sent shortly.`;
+              showSection('stepSuccess');
+          } else {
+              errorEl.innerText = `Action failed (${response.status}). Please try again.`;
+              errorEl.style.display = 'block';
+          }
+      } finally {
+          btn.disabled = false;
+          btn.innerText = originalText;
       }
   }
 
