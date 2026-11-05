@@ -1,0 +1,28 @@
+:root {
+    --ink: #000000;
+    --clay: #E63946;
+    --emerald: #00FF41;
+    --gold: #008F11;
+    --white: #FFFFFF;
+}
+
+body { margin: 0; font-family: sans-serif; background: var(--ink); color: var(--white); }
+
+.navbar { display: flex; justify-content: space-between; padding: 2rem; align-items: center; }
+.emerald { color: var(--emerald); }
+
+.hero {
+    height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('safari-bg.jpg');
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 5rem;
+}
+
+h1 { font-size: 4rem; line-height: 1.1; }
+.btn-emerald { background: var(--emerald); color: var(--ink); padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: bold; }
+.btn-outline { border: 1px solid var(--white); color: var(--white); padding: 1rem 2rem; border-radius: 50px; text-decoration: none; margin-left: 1rem; }
+
+.hero-footer { margin-top: auto; padding-bottom: 2rem; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.2); pt: 1rem; }

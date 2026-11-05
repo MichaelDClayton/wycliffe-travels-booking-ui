@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wycliffe Travels — Tour Provider Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --bg:         #0c0d0f;
+      --surface:    #13151a;
+      --surface2:   #1c1f27;
+      --border:     #2a2d38;
+      --gold:       #c9a96e;
+      --gold-dim:   #8a6e42;
+      --text:       #e8e4dc;
+      --text-muted: #7a7872;
+      --red:        #c0392b;
+      --green:      #2ecc71;
+      --radius:     4px;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-mono:  'DM Mono', monospace;
+    }
+
+    /* ── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-mono); font-size: 13px; }
+    button { cursor: pointer; font-family: var(--font-mono); }
+    input, textarea, select { font-family: var(--font-mono); font-size: 13px; }
+
+    /* ── LOADING SCREEN ─────────────────────────────────────── */
+    #loading-screen {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100; transition: opacity 0.6s ease;
+    }
+    #loading-screen.fade-out { opacity: 0; pointer-events: none; }
+    .loading-wordmark {
+      font-family: var(--font-serif); font-size: 28px; font-weight: 300;
+      letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+    /* ── AUTH SCREEN ─────────────────────────────────────────── */
+    #auth-screen {
+      display: none; min-height: 100vh;
+      align-items: center; justify-content: center;
+      background: radial-gradient(ellipse at 20% 50%, #1a1510 0%, var(--bg) 60%);
+    }
+    #auth-screen.visible { display: flex; }
+    .auth-card {
+      width: 420px; padding: 52px 44px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      animation: slideUp 0.5s ease both;
+    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .auth-logo {
+      font-family: var(--font-serif); font-size: 11px; letter-spacing: 0.4em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 6px;
+    }
+    .auth-title {
+      font-family: var(--font-serif); font-size: 32px; font-weight: 300;
+      color: var(--text); margin-bottom: 36px; line-height: 1.2;
+    }
+    .auth-title em { font-style: italic; color: var(--gold); }
+    .field-group { margin-bottom: 20px; }
+    .field-group label {
+      display: block; font-size: 10px; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
+    }
+    .field-group input {
+      width: 100%; padding: 12px 14px;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); outline: none;
+      transition: border-color 0.2s;
+    }
+    .field-group input:focus { border-color: var(--gold-dim); }
+    .btn-primary {
+      width: 100%; padding: 14px;
+      background: var(--gold); color: var(--bg);
+      border: none; font-size: 11px; letter-spacing: 0.2em;
+      text-transform: uppercase; font-weight: 400;
+      transition: background 0.2s, opacity 0.2s;
+      margin-top: 8px;
+    }
+    .btn-primary:hover { background: #d4b87a; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .auth-error {
+      margin-top: 16px; padding: 12px 14px;
+      background: rgba(192,57,43,0.15); border: 1px solid rgba(192,57,43,0.4);
+      color: #e07060; font-size: 12px; display: none;
+    }
+    .auth-error.visible { display: block; }
+
+    /* New password challenge */
+    #new-password-section { display: none; }
+    #new-password-section.visible { display: block; }
+
+    /* ── APP SHELL ───────────────────────────────────────────── */
+    #app { display: none; min-height: 100vh; flex-direction: column; }
+    #app.visible { display: flex; }
+
+    /* ── HEADER ──────────────────────────────────────────────── */
+    .header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 60px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .header-brand {
+      font-family: var(--font-serif); font-size: 13px;
+      letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold);
+    }
+    .header-right { display: flex; align-items: center; gap: 20px; }
+    .header-user { color: var(--text-muted); font-size: 11px; letter-spacing: 0.05em; }
+    .btn-ghost {
+      padding: 7px 16px; background: transparent;
+      border: 1px solid var(--border); color: var(--text-muted);
+      font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--gold-dim); color: var(--text); }
+
+    /* ── MAIN LAYOUT ─────────────────────────────────────────── */
+    .main { flex: 1; padding: 48px 40px; max-width: 1100px; margin: 0 auto; width: 100%; }
+
+    /* ── PAGE HEADER ─────────────────────────────────────────── */
+    .page-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 40px; padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-title {
+      font-family: var(--font-serif); font-size: 42px; font-weight: 300;
+      line-height: 1; color: var(--text);
+    }
+    .page-title span { color: var(--gold); font-style: italic; }
+    .page-subtitle { color: var(--text-muted); font-size: 11px; letter-spacing: 0.1em; margin-top: 6px; }
+    .btn-new {
+      padding: 12px 24px; background: transparent;
+      border: 1px solid var(--gold-dim); color: var(--gold);
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      transition: background 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .btn-new:hover { background: rgba(201,169,110,0.08); border-color: var(--gold); }
+
+    /* ── TOAST ───────────────────────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 32px; right: 32px;
+      padding: 14px 20px; font-size: 12px; letter-spacing: 0.05em;
+      border-left: 3px solid var(--green);
+      background: var(--surface2); color: var(--text);
+      transform: translateY(20px); opacity: 0;
+      transition: all 0.3s ease; pointer-events: none; z-index: 200;
+    }
+    .toast.visible { transform: translateY(0); opacity: 1; }
+    .toast.error { border-color: var(--red); }
+
+    /* ── TOUR GRID ───────────────────────────────────────────── */
+    .tour-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2px;
+    }
+    .tour-card {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 28px; position: relative; overflow: hidden;
+      transition: border-color 0.2s;
+      animation: fadeIn 0.4s ease both;
+    }
+    .tour-card:hover { border-color: var(--gold-dim); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .tour-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 3px; height: 0; background: var(--gold);
+      transition: height 0.3s ease;
+    }
+    .tour-card:hover::before { height: 100%; }
+    .tour-category {
+      font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--gold-dim); margin-bottom: 10px;
+    }
+    .tour-name {
+      font-family: var(--font-serif); font-size: 22px; font-weight: 400;
+      color: var(--text); margin-bottom: 10px; line-height: 1.2;
+    }
+    .tour-desc {
+      color: var(--text-muted); font-size: 12px; line-height: 1.7;
+      margin-bottom: 18px;
+      display: -webkit-box; -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .tour-meta {
+      display: flex; gap: 20px; margin-bottom: 20px;
+      padding-top: 16px; border-top: 1px solid var(--border);
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 3px; }
+    .meta-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
+    .meta-value { font-size: 14px; color: var(--text); }
+    .tour-actions { display: flex; gap: 8px; }
+    .btn-edit, .btn-delete {
+      flex: 1; padding: 8px 12px; border: 1px solid var(--border);
+      font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+      transition: all 0.2s; background: transparent;
+    }
+    .btn-edit { color: var(--text-muted); }
+    .btn-edit:hover { border-color: var(--gold-dim); color: var(--gold); }
+    .btn-delete { color: var(--text-muted); }
+    .btn-delete:hover { border-color: rgba(192,57,43,0.5); color: #e07060; background: rgba(192,57,43,0.06); }
+
+    /* Empty state */
+    .empty-state {
+      grid-column: 1/-1; text-align: center;
+      padding: 80px 20px;
+    }
+    .empty-state-title {
+      font-family: var(--font-serif); font-size: 28px; font-weight: 300;
+      color: var(--text-muted); margin-bottom: 12px;
+    }
+    .empty-state-sub { color: var(--text-muted); font-size: 12px; opacity: 0.6; }
+
+    /* Loading state */
+    .loading-tours {
+      grid-column: 1/-1; text-align: center;
+      padding: 80px 20px; color: var(--text-muted); letter-spacing: 0.1em;
+    }
+
+    /* ── MODAL ───────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 50; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal-overlay.visible { opacity: 1; pointer-events: all; }
+    .modal {
+      width: 580px; max-width: 95vw; max-height: 90vh;
+      overflow-y: auto; background: var(--surface);
+      border: 1px solid var(--border);
+      transform: scale(0.96) translateY(10px);
+      transition: transform 0.3s ease;
+    }
+    .modal-overlay.visible .modal { transform: scale(1) translateY(0); }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 32px; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: var(--surface); z-index: 1;
+    }
+    .modal-title {
+      font-family: var(--font-serif); font-size: 24px; font-weight: 300;
+    }
+    .modal-close {
+      background: none; border: none; color: var(--text-muted);
+      font-size: 20px; line-height: 1; padding: 4px 8px;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 32px; }
+    .form-row { margin-bottom: 24px; }
+    .form-row label {
+      display: block; font-size: 10px; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
+    }
+    .form-row input, .form-row textarea, .form-row select {
+      width: 100%; padding: 11px 14px;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); outline: none;
+      transition: border-color 0.2s; resize: vertical;
+    }
+    .form-row input:focus, .form-row textarea:focus, .form-row select:focus {
+      border-color: var(--gold-dim);
+    }
+    .form-row select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237a7872'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      cursor: pointer;
+    }
+    .form-row select option {
+      background: #1c1f27;
+      color: var(--text);
+    }
+    .form-row textarea { min-height: 90px; }
+    .form-row-inline { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .modal-footer {
+      display: flex; gap: 12px; justify-content: flex-end;
+      padding: 20px 32px; border-top: 1px solid var(--border);
+      position: sticky; bottom: 0; background: var(--surface);
+    }
+    .btn-cancel {
+      padding: 10px 24px; background: transparent;
+      border: 1px solid var(--border); color: var(--text-muted);
+      font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .btn-cancel:hover { border-color: var(--text-muted); color: var(--text); }
+    .btn-save {
+      padding: 10px 28px; background: var(--gold); color: var(--bg);
+      border: none; font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; transition: background 0.2s, opacity 0.2s;
+    }
+    .btn-save:hover { background: #d4b87a; }
+    .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Delete confirm modal */
+    .confirm-modal { width: 420px; }
+    .confirm-body { padding: 32px; }
+    .confirm-message {
+      font-family: var(--font-serif); font-size: 20px; font-weight: 300;
+      margin-bottom: 10px; line-height: 1.4;
+    }
+    .confirm-sub { color: var(--text-muted); font-size: 12px; line-height: 1.6; }
+    .btn-danger {
+      padding: 10px 28px; background: var(--red); color: #fff;
+      border: none; font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; transition: background 0.2s;
+    }
+    .btn-danger:hover { background: #a93226; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading-screen">
+  <div class="loading-wordmark">Wycliffe Travels</div>
+</div>
+
+<!-- Auth -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">Wycliffe Travels</div>
+    <h1 class="auth-title">Provider<br /><em>Portal</em></h1>
+
+    <div id="login-section">
+      <div class="field-group">
+        <label>Email</label>
+        <input type="email" id="auth-email" placeholder="you@email.com" autocomplete="email" />
+      </div>
+      <div class="field-group">
+        <label>Password</label>
+        <input type="password" id="auth-password" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <button class="btn-primary" id="btn-login">Sign In</button>
+    </div>
+
+    <!-- New password challenge on first login -->
+    <div id="new-password-section">
+      <p style="color:var(--text-muted);font-size:12px;margin-bottom:24px;line-height:1.6;">
+        This is your first login. Please set a new permanent password.
+      </p>
+      <div class="field-group">
+        <label>New Password</label>
+        <input type="password" id="new-password" placeholder="Min 8 chars, upper, lower, number" />
+      </div>
+      <button class="btn-primary" id="btn-set-password">Set Password & Continue</button>
+    </div>
+
+    <div class="auth-error" id="auth-error"></div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <header class="header">
+    <div class="header-brand" style="display:flex;align-items:center;gap:10px;">
+        <img src="https://d3he7xhdu9g98o.cloudfront.net/images/Wycliffe-Logo-100x100.png" alt="Wycliffe Travels" style="height:36px;width:36px;object-fit:contain;" />
+        <span>Wycliffe Travels</span>
+      </div>
+    <div class="header-right">
+      <span class="header-user" id="header-email"></span>
+      <button class="btn-ghost" id="btn-logout">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h2 class="page-title">Your <span>Tours</span></h2>
+        <p class="page-subtitle" id="tour-count">Loading…</p>
+      </div>
+      <button class="btn-new" id="btn-new-tour">+ Add New Tour</button>
+    </div>
+
+    <div class="tour-grid" id="tour-grid">
+      <div class="loading-tours">Loading tours…</div>
+    </div>
+  </main>
+</div>
+
+<!-- Tour Form Modal -->
+<div class="modal-overlay" id="form-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title" id="form-modal-title">New Tour</h3>
+      <button class="modal-close" id="form-modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label>Tour Name <span style="color:var(--red)">*</span></label>
+        <input type="text" id="f-tourName" placeholder="e.g. Blue Mountain Sunrise Trek" />
+      </div>
+      <div class="form-row">
+        <label>Category</label>
+        <input type="text" id="f-tourCategory" placeholder="e.g. Adventure, Cultural, Wildlife" />
+      </div>
+      <div class="form-row">
+        <label>Description</label>
+        <textarea id="f-tourDescription" placeholder="Describe the tour experience…"></textarea>
+      </div>
+      <div class="form-row">
+        <label>Highlights</label>
+        <textarea id="f-highlights" placeholder="Key features, what's included, special moments…"></textarea>
+      </div>
+      <div class="form-row-inline">
+        <div class="form-row" style="margin-bottom:0">
+          <label>Duration (Hours)</label>
+          <select id="f-durationHours">
+            <option value="">— select —</option>
+            <option value="1">1 hour</option>
+            <option value="2">2 hours</option>
+            <option value="3">3 hours</option>
+            <option value="4">4 hours</option>
+            <option value="5">5 hours</option>
+            <option value="6">6 hours</option>
+            <option value="7">7 hours</option>
+            <option value="8">8 hours</option>
+            <option value="12">12 hours</option>
+          </select>
+        </div>
+        <div class="form-row" style="margin-bottom:0">
+          <label>Duration (Days)</label>
+          <select id="f-durationDays">
+            <option value="">— select —</option>
+            <option value="1">1 day</option>
+            <option value="2">2 days</option>
+            <option value="3">3 days</option>
+            <option value="4">4 days</option>
+            <option value="5">5 days</option>
+            <option value="6">6 days</option>
+            <option value="7">7 days</option>
+            <option value="8">8 days</option>
+            <option value="9">9 days</option>
+            <option value="10">10 days</option>
+            <option value="14">14 days</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Official Price (USD)</label>
+        <input type="number" id="f-officialPrice" placeholder="e.g. 120.00" min="0" step="0.01" />
+      </div>
+      <div class="form-row">
+        <label>Tour Guide Email</label>
+        <input type="email" id="f-tourGuideEmail" placeholder="e.g. guide@example.com" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="form-cancel">Cancel</button>
+      <button class="btn-save" id="form-save">Save Tour</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal confirm-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Delete Tour</h3>
+      <button class="modal-close" id="delete-modal-close">✕</button>
+    </div>
+    <div class="confirm-body">
+      <p class="confirm-message" id="delete-tour-name"></p>
+      <p class="confirm-sub">This will permanently remove the tour from your listing. This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="delete-cancel">Cancel</button>
+      <button class="btn-danger" id="delete-confirm">Delete Tour</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────
+const CONFIG = {
+  cognitoRegion:   'us-east-1',
+  userPoolId:      'us-east-1_aB3x2ZolV',
+  clientId:        '5vt76vti4vv9p6u5uh3955ct55',
+  apiBase:         'https://fglerw59ak.execute-api.us-east-1.amazonaws.com/sandbox/portal',
+};
+
+const COGNITO_URL = `https://cognito-idp.${CONFIG.cognitoRegion}.amazonaws.com/`;
+
+// ── STATE ─────────────────────────────────────────────────────
+let idToken        = null;
+let accessToken    = null;
+let cognitoSession = null;   // holds session for NEW_PASSWORD_REQUIRED challenge
+let editingTour    = null;   // tourName being edited, null = new
+let deletingTour   = null;
+
+// ── STORAGE ───────────────────────────────────────────────────
+function saveTokens(id, access) {
+  sessionStorage.setItem('wt_id_token', id);
+  sessionStorage.setItem('wt_access_token', access);
+}
+function loadTokens() {
+  idToken     = sessionStorage.getItem('wt_id_token');
+  accessToken = sessionStorage.getItem('wt_access_token');
+}
+function clearTokens() {
+  sessionStorage.removeItem('wt_id_token');
+  sessionStorage.removeItem('wt_access_token');
+  idToken = accessToken = null;
+}
+
+// ── COGNITO AUTH ──────────────────────────────────────────────
+async function cognitoRequest(action, body) {
+  const res = await fetch(COGNITO_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-amz-json-1.1',
+      'X-Amz-Target': `AWSCognitoIdentityProviderService.${action}`,
+    },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) throw data;
+  return data;
+}
+
+async function signIn(email, password) {
+  return cognitoRequest('InitiateAuth', {
+    AuthFlow: 'USER_PASSWORD_AUTH',
+    ClientId: CONFIG.clientId,
+    AuthParameters: { USERNAME: email, PASSWORD: password },
+  });
+}
+
+async function respondToNewPassword(session, email, newPassword) {
+  return cognitoRequest('RespondToAuthChallenge', {
+    ClientId: CONFIG.clientId,
+    ChallengeName: 'NEW_PASSWORD_REQUIRED',
+    Session: session,
+    ChallengeResponses: { USERNAME: email, NEW_PASSWORD: newPassword },
+  });
+}
+
+function getEmailFromToken(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.email || payload['cognito:username'] || '';
+  } catch { return ''; }
+}
+
+// ── API CALLS ─────────────────────────────────────────────────
+async function apiRequest(method, path, body) {
+  const res = await fetch(`${CONFIG.apiBase}${path}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': idToken,
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await res.json();
+  if (!res.ok) throw data;
+  return data;
+}
+
+const api = {
+  listTours:   ()           => apiRequest('GET',    '/tours'),
+  createTour:  (tour)       => apiRequest('POST',   '/tours', tour),
+  updateTour:  (name, tour) => apiRequest('PUT',    `/tours/${encodeURIComponent(name)}`, tour),
+  deleteTour:  (name)       => apiRequest('DELETE', `/tours/${encodeURIComponent(name)}`),
+};
+
+// ── UI HELPERS ────────────────────────────────────────────────
+function showLoading(on) {
+  const el = document.getElementById('loading-screen');
+  if (on) { el.classList.remove('fade-out'); el.style.display = 'flex'; }
+  else    { el.classList.add('fade-out'); setTimeout(() => el.style.display = 'none', 600); }
+}
+function showAuth()  {
+  document.getElementById('auth-screen').classList.add('visible');
+  document.getElementById('app').classList.remove('visible');
+}
+function showApp()   {
+  document.getElementById('auth-screen').classList.remove('visible');
+  document.getElementById('app').classList.add('visible');
+  document.getElementById('header-email').textContent = getEmailFromToken(idToken);
+}
+
+let toastTimer;
+function toast(msg, isError = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast visible' + (isError ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('visible'), 3000);
+}
+
+function setAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.className = 'auth-error' + (msg ? ' visible' : '');
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('visible'); }
+function closeModal(id) { document.getElementById(id).classList.remove('visible'); }
+
+// ── RENDER TOURS ──────────────────────────────────────────────
+function renderTours(tours) {
+  const grid = document.getElementById('tour-grid');
+  const count = document.getElementById('tour-count');
+
+  if (!tours.length) {
+    count.textContent = 'No tours yet';
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-title">No tours yet</div>
+        <div class="empty-state-sub">Add your first tour to get started</div>
+      </div>`;
+    return;
+  }
+
+  count.textContent = `${tours.length} tour${tours.length !== 1 ? 's' : ''}`;
+
+  grid.innerHTML = tours.map((t, i) => `
+    <div class="tour-card" style="animation-delay:${i * 0.05}s">
+      <div class="tour-category">${esc(t.tourCategory || 'Uncategorised')}</div>
+      <div class="tour-name">${esc(t.tourName)}</div>
+      <div class="tour-desc">${esc(t.tourDescription || '—')}</div>
+      <div class="tour-meta">
+        <div class="meta-item">
+          <span class="meta-label">Hours</span>
+          <span class="meta-value">${t.durationHours ? t.durationHours + 'h' : '—'}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Days</span>
+          <span class="meta-value">${t.durationDays ? t.durationDays + 'd' : '—'}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Price</span>
+          <span class="meta-value">${t.officialPrice ? '$' + Number(t.officialPrice).toFixed(2) : '—'}</span>
+        </div>
+      </div>
+      <div class="tour-actions">
+        <button class="btn-edit" data-name="${esc(t.tourName)}">Edit</button>
+        <button class="btn-delete" data-name="${esc(t.tourName)}">Delete</button>
+      </div>
+    </div>
+  `).join('');
+
+  // Attach card action listeners
+  grid.querySelectorAll('.btn-edit').forEach(btn =>
+    btn.addEventListener('click', () => openEditModal(btn.dataset.name, tours))
+  );
+  grid.querySelectorAll('.btn-delete').forEach(btn =>
+    btn.addEventListener('click', () => openDeleteModal(btn.dataset.name))
+  );
+}
+
+function esc(str) {
+  return String(str ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── LOAD TOURS ────────────────────────────────────────────────
+async function loadTours() {
+  document.getElementById('tour-grid').innerHTML = '<div class="loading-tours">Loading tours…</div>';
+  try {
+    const data = await api.listTours();
+    renderTours(data.tours || []);
+  } catch (err) {
+    toast('Failed to load tours', true);
+    console.error(err);
+  }
+}
+
+// ── FORM MODAL ────────────────────────────────────────────────
+function clearForm() {
+  ['tourName','tourCategory','tourDescription','highlights','officialPrice','tourGuideEmail']
+    .forEach(f => document.getElementById(`f-${f}`).value = '');
+  document.getElementById('f-durationHours').value = '';
+  document.getElementById('f-durationDays').value = '';
+}
+
+function openNewModal() {
+  editingTour = null;
+  clearForm();
+  document.getElementById('form-modal-title').textContent = 'New Tour';
+  document.getElementById('f-tourName').disabled = false;
+  openModal('form-modal');
+  document.getElementById('f-tourName').focus();
+}
+
+function openEditModal(tourName, tours) {
+  const tour = tours.find(t => t.tourName === tourName);
+  if (!tour) return;
+  editingTour = tourName;
+  document.getElementById('form-modal-title').textContent = 'Edit Tour';
+  document.getElementById('f-tourName').value        = tour.tourName        || '';
+  document.getElementById('f-tourName').disabled     = true;  // partition key — immutable
+  document.getElementById('f-tourCategory').value    = tour.tourCategory    || '';
+  document.getElementById('f-tourDescription').value = tour.tourDescription || '';
+  document.getElementById('f-highlights').value      = tour.highlights      || '';
+  document.getElementById('f-durationHours').value   = tour.durationHours   || '';
+  document.getElementById('f-durationDays').value    = tour.durationDays    || '';
+  document.getElementById('f-officialPrice').value   = tour.officialPrice   || '';
+  document.getElementById('f-tourGuideEmail').value   = tour.tourGuideEmail   || '';
+  openModal('form-modal');
+}
+
+async function saveTour() {
+  const btn = document.getElementById('form-save');
+  const tourName = document.getElementById('f-tourName').value.trim();
+
+  if (!tourName && !editingTour) { toast('Tour name is required', true); return; }
+
+  const payload = {
+    tourName:        tourName || editingTour,
+    tourCategory:    document.getElementById('f-tourCategory').value.trim(),
+    tourDescription: document.getElementById('f-tourDescription').value.trim(),
+    highlights:      document.getElementById('f-highlights').value.trim(),
+    durationHours:   document.getElementById('f-durationHours').value || null,
+    durationDays:    document.getElementById('f-durationDays').value || null,
+    tourGuideEmail:  document.getElementById('f-tourGuideEmail').value.trim() || null,
+    officialPrice:   parseFloat(document.getElementById('f-officialPrice').value) || null,
+  };
+  // Remove nulls
+  Object.keys(payload).forEach(k => payload[k] === null && delete payload[k]);
+
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    if (editingTour) {
+      await api.updateTour(editingTour, payload);
+      toast('Tour updated');
+    } else {
+      await api.createTour(payload);
+      toast('Tour created');
+    }
+    closeModal('form-modal');
+    await loadTours();
+  } catch (err) {
+    toast(err.error || 'Save failed', true);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Tour';
+  }
+}
+
+// ── DELETE MODAL ──────────────────────────────────────────────
+function openDeleteModal(tourName) {
+  deletingTour = tourName;
+  document.getElementById('delete-tour-name').textContent = `Delete "${tourName}"?`;
+  openModal('delete-modal');
+}
+
+async function confirmDelete() {
+  const btn = document.getElementById('delete-confirm');
+  btn.disabled = true; btn.textContent = 'Deleting…';
+  try {
+    await api.deleteTour(deletingTour);
+    toast('Tour deleted');
+    closeModal('delete-modal');
+    await loadTours();
+  } catch (err) {
+    toast(err.error || 'Delete failed', true);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Delete Tour';
+  }
+}
+
+// ── AUTH FLOW ─────────────────────────────────────────────────
+async function handleLogin() {
+  const email    = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const btn      = document.getElementById('btn-login');
+
+  if (!email || !password) { setAuthError('Please enter your email and password.'); return; }
+
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  setAuthError('');
+
+  try {
+    const result = await signIn(email, password);
+
+    if (result.ChallengeName === 'NEW_PASSWORD_REQUIRED') {
+      cognitoSession = result.Session;
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('new-password-section').classList.add('visible');
+      document.getElementById('new-password').focus();
+      return;
+    }
+
+    const tokens = result.AuthenticationResult;
+    idToken = tokens.IdToken; accessToken = tokens.AccessToken;
+    saveTokens(idToken, accessToken);
+    showApp(); loadTours();
+  } catch (err) {
+    setAuthError(err.message || err.__type || 'Sign in failed.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Sign In';
+  }
+}
+
+async function handleSetNewPassword() {
+  const email       = document.getElementById('auth-email').value.trim();
+  const newPassword = document.getElementById('new-password').value;
+  const btn         = document.getElementById('btn-set-password');
+
+  if (newPassword.length < 8) { setAuthError('Password must be at least 8 characters.'); return; }
+
+  btn.disabled = true; btn.textContent = 'Setting password…';
+  setAuthError('');
+
+  try {
+    const result = await respondToNewPassword(cognitoSession, email, newPassword);
+    const tokens = result.AuthenticationResult;
+    idToken = tokens.IdToken; accessToken = tokens.AccessToken;
+    saveTokens(idToken, accessToken);
+    showApp(); loadTours();
+  } catch (err) {
+    setAuthError(err.message || 'Failed to set password.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Set Password & Continue';
+  }
+}
+
+function handleLogout() {
+  clearTokens();
+  showAuth();
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadTokens();
+
+  // Decide initial screen
+  setTimeout(() => {
+    showLoading(false);
+    if (idToken) { showApp(); loadTours(); }
+    else         { showAuth(); }
+  }, 800);
+
+  // Auth events
+  document.getElementById('btn-login').addEventListener('click', handleLogin);
+  document.getElementById('btn-set-password').addEventListener('click', handleSetNewPassword);
+  document.getElementById('auth-password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleLogin();
+  });
+  document.getElementById('btn-logout').addEventListener('click', handleLogout);
+
+  // Tour actions
+  document.getElementById('btn-new-tour').addEventListener('click', openNewModal);
+  document.getElementById('form-save').addEventListener('click', saveTour);
+  document.getElementById('form-cancel').addEventListener('click', () => closeModal('form-modal'));
+  document.getElementById('form-modal-close').addEventListener('click', () => closeModal('form-modal'));
+
+  document.getElementById('delete-confirm').addEventListener('click', confirmDelete);
+  document.getElementById('delete-cancel').addEventListener('click', () => closeModal('delete-modal'));
+  document.getElementById('delete-modal-close').addEventListener('click', () => closeModal('delete-modal'));
+
+  // Close modals on overlay click
+  ['form-modal','delete-modal'].forEach(id => {
+    document.getElementById(id).addEventListener('click', e => {
+      if (e.target.id === id) closeModal(id);
+    });
+  });
+});
+</script>
+</body>
+</html>
