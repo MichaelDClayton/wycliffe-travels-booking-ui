@@ -581,10 +581,15 @@
         const option = document.createElement('option');
         option.value = tour.eventTypeId;
         option.textContent = tour.tourName;
-        option.dataset.price       = tour.officialPrice;
+        if (!ENQUIRY_MODE) option.dataset.price = tour.officialPrice;   // never put the price in the page in enquiry mode
         option.dataset.description = tour.tourDescription || '';
         option.dataset.highlights  = tour.highlights || '';
-        option.dataset.duration    = tour.duration || '';
+        // Portal saves durationDays / durationHours; older records may only have `duration` (hours)
+        option.dataset.duration    = tour.durationDays
+          ? `${tour.durationDays} day${tour.durationDays == 1 ? '' : 's'}`
+          : (tour.durationHours || tour.duration)
+            ? `${tour.durationHours || tour.duration} hours`
+            : '';
         option.dataset.category    = tour.tourCategory || '';
         tourSelect.appendChild(option);
       });
@@ -660,7 +665,7 @@
     document.getElementById('summaryName').textContent = selected.textContent;
     const metaParts = [];
     if (category) metaParts.push(category);
-    if (duration) metaParts.push(`${duration} hours`);
+    if (duration) metaParts.push(duration);
     document.getElementById('summaryMeta').textContent = metaParts.join(' · ');
     document.getElementById('summaryDesc').textContent = desc;
 
