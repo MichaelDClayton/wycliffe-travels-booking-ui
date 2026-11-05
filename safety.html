@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4HZP8G01WP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4HZP8G01WP');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Safety & Preparation | Wycliffe Travels</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/shared.css"/>
+  <style>
+    /* ── Safety page-specific styles only ── */
+    .logo-mark { width: 36px !important; height: 36px !important; }
+    .logo-mark img { width: 36px !important; height: 36px !important; }
+    .logo-mark { width: 36px !important; height: 36px !important; }
+    .logo-mark img { width: 36px !important; height: 36px !important; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--color-cream);
+      color: var(--color-ink);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 52vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 5rem 3rem 4rem;
+      overflow: hidden;
+      background: var(--color-emerald);
+    }
+
+    .hero-texture {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 70% 40%, rgba(45, 90, 69, 0.0) 0%, rgba(30, 55, 40, 0.6) 100%),
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 40px,
+          rgba(255,255,255,0.015) 40px,
+          rgba(255,255,255,0.015) 41px
+        );
+    }
+
+    .hero-accent {
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 300;
+      line-height: 1.08;
+      color: var(--color-cream);
+      margin-bottom: 1.4rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--color-gold);
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: rgba(248, 243, 236, 0.72);
+      max-width: 480px;
+      line-height: 1.8;
+    }
+
+    .hero-divider {
+      width: 48px;
+      height: 2px;
+      background: var(--color-gold);
+      margin: 1.6rem 0;
+    }
+
+    /* ── SECTIONS ── */
+    .page-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 3rem 6rem;
+    }
+
+    /* ── WYCLIFFE GUARANTEE ── */
+    .guarantee-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 6rem;
+      align-items: start;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-clay);
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--color-emerald);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title em { font-style: italic; color: var(--color-clay); }
+
+    .body-text {
+      font-size: 0.95rem;
+      color: var(--color-muted);
+      line-height: 1.85;
+      margin-bottom: 1.2rem;
+    }
+
+    /* Equipment cards */
+    .equipment-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .eq-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+      background: white;
+      border: 1px solid var(--color-cream);
+      border-left: 3px solid var(--color-emerald);
+      border-radius: 6px;
+      padding: 1.3rem 1.5rem;
+      transition: border-left-color 0.25s, box-shadow 0.25s;
+    }
+
+    .eq-card:hover {
+      border-left-color: var(--color-gold);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .eq-icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .eq-title {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--color-emerald);
+      margin-bottom: 0.3rem;
+      text-transform: uppercase;
+    }
+
+    .eq-desc {
+      font-size: 0.88rem;
+      color: var(--color-muted);
+      line-height: 1.6;
+    }
+
+    /* ── WHAT TO BRING ── */
+    .packing-section {
+      margin-bottom: 6rem;
+      animation: fadeUp 0.8s ease 0.2s both;
+    }
+
+    .packing-header {
+      display: flex;
+      align-items: flex-end;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .packing-header-text { flex: 1; }
+
+    .packing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .pack-card {
+      background: white;
+      border: 1px solid var(--color-cream);
+      border-radius: 8px;
+      padding: 2rem 1.6rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .pack-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+
+    .pack-card.confirmed::before { background: var(--color-emerald); }
+    .pack-card.general::before  { background: var(--color-gold); }
+
+    .pack-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+
+    .pack-badge {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .pack-badge.confirmed {
+      background: rgba(45, 90, 69, 0.1);
+      color: var(--color-emerald);
+    }
+
+    .pack-badge.general {
+      background: rgba(201, 168, 76, 0.15);
+      color: #8a6e20;
+    }
+
+    .pack-icon { font-size: 1.8rem; margin-bottom: 0.8rem; display: block; }
+
+    .pack-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--color-ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .pack-desc {
+      font-size: 0.84rem;
+      color: var(--color-muted);
+      line-height: 1.65;
+    }
+
+    /* ── LEGEND ── */
+    .legend {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1.8rem;
+      padding: 1.2rem 1.6rem;
+      background: var(--color-cream);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      color: var(--color-muted);
+    }
+
+    .legend-item { display: flex; align-items: center; gap: 0.5rem; }
+
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .legend-dot.confirmed { background: var(--color-emerald); }
+    .legend-dot.general   { background: var(--color-gold); }
+
+    /* ── QUOTE BAND ── */
+    .quote-band {
+      background: var(--color-emerald);
+      border-radius: 10px;
+      padding: 3.5rem 4rem;
+      margin-bottom: 6rem;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.8s ease 0.3s both;
+    }
+
+    .quote-band::before {
+      content: '\201C';
+      position: absolute;
+      top: -20px; left: 30px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14rem;
+      color: rgba(201,168,76,0.12);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .quote-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--color-cream);
+      line-height: 1.5;
+      max-width: 680px;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 1.2rem;
+    }
+
+    .quote-attr {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+    }
+
+    /* ── CTA ── */
+    .cta-block {
+      text-align: center;
+      padding: 2rem 0;
+      animation: fadeUp 0.8s ease 0.4s both;
+    }
+
+    .cta-block .section-title { margin-bottom: 0.8rem; }
+    .cta-block .body-text { max-width: 500px; margin: 0 auto 2rem; }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 0.9rem 2.4rem;
+      background: var(--color-clay);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 3px;
+      transition: background 0.25s, transform 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--color-clay);
+      transform: translateY(-2px);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--color-cream);
+      padding: 2rem 3rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--color-muted);
+      letter-spacing: 0.05em;
+    }
+
+    footer a { color: var(--color-clay); text-decoration: none; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1.5rem; }
+      .nav-links a { font-size: 0.72rem; }
+
+      .hero { padding: 5rem 1.5rem 3rem; min-height: 44vh; }
+
+      .page-content { padding: 3.5rem 1.5rem 5rem; }
+
+      .guarantee-block { grid-template-columns: 1fr; gap: 2rem; }
+
+      .packing-grid { grid-template-columns: 1fr 1fr; }
+
+      .quote-band { padding: 2.5rem 2rem; }
+
+      footer { padding: 1.5rem; }
+    }
+
+    @media (max-width: 520px) {
+      .packing-grid { grid-template-columns: 1fr; }
+      .legend { flex-direction: column; gap: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="site-header" id="site-header" style="position:fixed;top:0;left:0;right:0;background:rgba(26,23,18,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(245,239,230,0.08);z-index:100;">
+    <div class="container header-inner" style="display:flex;align-items:center;justify-content:space-between;padding-top:1.25rem;padding-bottom:1.25rem;">
+      <a href="/index.html" class="logo" aria-label="Home">
+        <div class="logo-mark"><img src="/images/Wycliffe-Logo-100x100.png" alt="" style="width:40px;height:40px;"/></div>
+        <span class="logo-text font-display">Wycliffe <em>Travels</em></span>
+      </a>
+
+      <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+        <a href="/index.html#journeys" data-section="journeys">Journeys</a>
+        <a href="/safety.html" data-section="safety" class="active">Preparation &amp; Safety</a>
+        <a href="/index.html#stories" data-section="stories">Stories</a>
+        <a href="/gallery.html" data-section="gallery">Gallery</a>
+        <a href="/manage.html">Manage Booking</a>
+      </nav>
+
+      <a href="/create.html" class="btn-header">
+        Begin Your Safari <span aria-hidden="true">→</span>
+      </a>
+
+      <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+      <a href="/index.html#journeys">Journeys</a>
+      <a href="/index.html#stories">Stories</a>
+      <a href="/safety.html">Preparation &amp; Safety</a>
+      <a href="/gallery.html">Gallery</a>
+      <a href="/manage.html">Manage Booking</a>
+      <a href="/create.html" style="color:var(--color-gold)">Begin Your Safari →</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-texture"></div>
+    <div class="hero-accent"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Your peace of mind, our priority</p>
+      <h1>Safety &amp; <em>Preparation</em></h1>
+      <div class="hero-divider"></div>
+      <p class="hero-sub">Everything you need to know before stepping into the wild — straight from your guide, Wycliffe.</p>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main class="page-content">
+
+    <!-- WYCLIFFE GUARANTEE -->
+    <div class="guarantee-block">
+      <div>
+        <p class="section-label">On Every Safari</p>
+        <h2 class="section-title">What We <em>Provide</em></h2>
+        <p class="body-text">
+          Every Wycliffe Travels safari vehicle is equipped with essential safety and comfort provisions — confirmed directly by Wycliffe. You're never far from help or communication in the field.
+        </p>
+        <p class="body-text">
+          Our jeeps are prepared before every departure so you can focus entirely on the experience.
+        </p>
+      </div>
+
+      <div class="equipment-grid">
+        <div class="eq-card">
+          <div class="eq-icon">🩺</div>
+          <div>
+            <div class="eq-title">First Aid Kit</div>
+            <div class="eq-desc">Each vehicle carries a fully stocked first aid kit to handle minor injuries and medical needs promptly in the field.</div>
+          </div>
+        </div>
+        <div class="eq-card">
+          <div class="eq-icon">🧊</div>
+          <div>
+            <div class="eq-title">Cooler Box</div>
+            <div class="eq-desc">A cooler box keeps your water and refreshments cold throughout the journey — essential in the savanna heat.</div>
+          </div>
+        </div>
+        <div class="eq-card">
+          <div class="eq-icon">📻</div>
+          <div>
+            <div class="eq-title">Radio Communication</div>
+            <div class="eq-desc">We carry radio equipment to stay in contact during safaris, especially in remote areas where mobile coverage may be limited.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHAT TO BRING -->
+    <section class="packing-section">
+      <div class="packing-header">
+        <div class="packing-header-text">
+          <p class="section-label">Packing Guide</p>
+          <h2 class="section-title">What to <em>Bring</em></h2>
+        </div>
+      </div>
+
+      <div class="packing-grid">
+
+        <!-- CONFIRMED BY WYCLIFFE -->
+        <div class="pack-card confirmed">
+          <span class="pack-badge confirmed">Wycliffe Recommends</span>
+          <span class="pack-icon">🦟</span>
+          <div class="pack-name">Insect Repellent</div>
+          <p class="pack-desc">Essential for bush and savanna environments. Mosquitoes and other insects are most active around dawn and dusk — don't leave camp without it.</p>
+        </div>
+
+        <div class="pack-card confirmed">
+          <span class="pack-badge confirmed">Wycliffe Recommends</span>
+          <span class="pack-icon">🎩</span>
+          <div class="pack-name">A Good Hat</div>
+          <p class="pack-desc">The open plains can be very dusty, and the equatorial sun is strong. A wide-brimmed hat handles both — comfort and sun protection in one.</p>
+        </div>
+
+        <div class="pack-card confirmed">
+          <span class="pack-badge confirmed">Wycliffe Recommends</span>
+          <span class="pack-icon">💵</span>
+          <div class="pack-name">Extra Cash</div>
+          <p class="pack-desc">Bring spending money for local souvenirs and curio shops. Tips for guides and camp staff are also a meaningful and appreciated gesture.</p>
+        </div>
+
+        <!-- GENERAL ADVICE -->
+        <div class="pack-card general">
+          <span class="pack-badge general">General Safari Advice</span>
+          <span class="pack-icon">🕶️</span>
+          <div class="pack-name">Sunglasses</div>
+          <p class="pack-desc">Polarized lenses help cut glare on the open savanna and protect your eyes during long game drives in bright conditions.</p>
+        </div>
+
+        <div class="pack-card general">
+          <span class="pack-badge general">General Safari Advice</span>
+          <span class="pack-icon">🌿</span>
+          <div class="pack-name">Neutral-Toned Clothing</div>
+          <p class="pack-desc">Earthy tones like khaki, olive, and tan blend with the landscape and are less likely to attract insects compared to bright colors.</p>
+        </div>
+
+        <div class="pack-card general">
+          <span class="pack-badge general">General Safari Advice</span>
+          <span class="pack-icon">🎒</span>
+          <div class="pack-name">Small Daypack</div>
+          <p class="pack-desc">A light backpack is handy for keeping your personal essentials — water bottle, camera, repellent, and snacks — within easy reach on the vehicle.</p>
+        </div>
+
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-dot confirmed"></div>
+          <span><strong>Wycliffe Recommends</strong> — confirmed directly by your guide for these specific tours</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot general"></div>
+          <span><strong>General Safari Advice</strong> — widely recommended best practices for safari travel</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- HEALTH & VACCINATIONS -->
+    <section class="packing-section" style="background: var(--color-cream);">
+      <div class="section-inner">
+        <div class="packing-header">
+          <div class="packing-header-text">
+            <p class="section-label">Health & Vaccinations</p>
+            <h2 class="section-title">Before You <em>Travel</em></h2>
+            <p class="body-text" style="margin-top:0.75rem; max-width:42rem">East Africa is safe and welcoming — but a few health preparations before departure will keep you comfortable throughout. Always consult your doctor or a travel clinic 4–6 weeks before your trip.</p>
+          </div>
+        </div>
+        <div class="packing-grid">
+
+          <div class="pack-card general">
+            <span class="pack-badge general">Required / Recommended</span>
+            <span class="pack-icon">💉</span>
+            <div class="pack-name">Yellow Fever Vaccine</div>
+            <p class="pack-desc">Required for entry into Kenya if you are travelling from a yellow fever endemic country. Even if not required, it is widely recommended. Carry your vaccination certificate.</p>
+          </div>
+
+          <div class="pack-card general">
+            <span class="pack-badge general">Recommended</span>
+            <span class="pack-icon">💊</span>
+            <div class="pack-name">Malaria Prophylaxis</div>
+            <p class="pack-desc">Malaria is present in many safari regions including the Mara and Tsavo. Consult your doctor about antimalarial tablets (e.g. Malarone or Doxycycline) — start the course before departure.</p>
+          </div>
+
+          <div class="pack-card general">
+            <span class="pack-badge general">Recommended</span>
+            <span class="pack-icon">🌊</span>
+            <div class="pack-name">Water & Food Safety</div>
+            <p class="pack-desc">Drink bottled or filtered water only. Avoid ice from unknown sources. Wycliffe Travels provides cooled drinking water on all safaris — your cooler box has you covered in the field.</p>
+          </div>
+
+          <div class="pack-card general">
+            <span class="pack-badge general">Consider</span>
+            <span class="pack-icon">🏥</span>
+            <div class="pack-name">Travel Health Insurance</div>
+            <p class="pack-desc">We recommend comprehensive travel insurance that covers medical evacuation. Nairobi Hospitals (Aga Khan, Nairobi Hospital) offer excellent care, but remote areas may require airlift to the city.</p>
+          </div>
+
+          <div class="pack-card general">
+            <span class="pack-badge general">Recommended</span>
+            <span class="pack-icon">☀️</span>
+            <div class="pack-name">Sun Protection</div>
+            <p class="pack-desc">The equatorial sun is intense at altitude and on the open savanna. Use SPF 50+ sunscreen and reapply frequently. Combine with your wide-brimmed hat for full protection.</p>
+          </div>
+
+          <div class="pack-card general">
+            <span class="pack-badge general">Routine</span>
+            <span class="pack-icon">✅</span>
+            <div class="pack-name">Routine Vaccinations</div>
+            <p class="pack-desc">Ensure your routine vaccinations are up to date — Hepatitis A &amp; B, Typhoid, Tetanus, and Measles/MMR are commonly recommended for East Africa travellers.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- QUOTE BAND -->
+    <div class="quote-band">
+      <p class="quote-text">
+        "Our jeeps have first aid kits and we have a cooler box and radio equipment for communication during safaris."
+      </p>
+      <p class="quote-attr">— Wycliffe, your guide &amp; host</p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-block">
+      <p class="section-label">Ready to Go?</p>
+      <h2 class="section-title">Book Your <em>Safari</em></h2>
+      <p class="body-text">Now that you know what to expect and what to pack, take the next step toward an unforgettable East African adventure.</p>
+      <a href="create.html" class="btn-primary">Reserve Your Tour</a>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 <a href="index.html">Wycliffe Travels</a> &nbsp;·&nbsp; <a href="mailto:info@wycliffetravels.com">info@wycliffetravels.com</a> &nbsp;·&nbsp; All rights reserved.</p>
+  </footer>
+
+<script>
+  const navToggle = document.getElementById('nav-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  if (navToggle && mobileNav) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = mobileNav.classList.toggle('open');
+      navToggle.classList.toggle('open', isOpen);
+      navToggle.setAttribute('aria-expanded', isOpen);
+      navToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+    });
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('open');
+        navToggle.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.setAttribute('aria-label', 'Open menu');
+      });
+    });
+  }
+</script>
+
+</body>
+</html>

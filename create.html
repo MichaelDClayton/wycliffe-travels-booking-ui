@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4HZP8G01WP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4HZP8G01WP');
+  </script>
+  <a href="https://wa.me/1234567890" id="whatsapp-btn" target="_blank">Chat on WhatsApp</a>
+
+  <script>
+    document.getElementById('whatsapp-btn').addEventListener('click', function() {
+      gtag('event', 'whatsapp_click', {
+        event_category: 'engagement',
+        event_label: 'whatsapp_chat_button'
+      });
+    });
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Your Adventure — Wycliffe Travels Safari &amp; Tour</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="../css/shared.css"/>
+  <style>
+    /* ── Page layout ───────────────────────────────────────────── */
+    .book-main {
+      max-width: 76rem;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    @media (min-width: 768px) {
+      .book-main { grid-template-columns: 1fr 1.5fr; gap: 5rem; padding: 4rem 2.5rem 6rem; }
+    }
+    @media (min-width: 1024px) {
+      .book-main { padding: 5rem 2.5rem 7rem; gap: 7rem; }
+    }
+
+    /* ── Left: lede ────────────────────────────────────────────── */
+    .book-headline {
+      margin-top: 1.25rem;
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+      color: var(--color-ink);
+    }
+    .book-headline em { font-style: italic; color: var(--color-clay); }
+    .book-desc {
+      margin-top: 1.5rem;
+      font-size: 0.9375rem;
+      line-height: 1.8;
+      color: var(--color-muted);
+      max-width: 28rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .book-contact {
+      margin-top: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      font-size: 0.875rem;
+      color: var(--color-ink);
+      line-height: 1.9;
+    }
+    .book-contact a:hover { color: var(--color-gold); }
+
+    /* ── Form grid ─────────────────────────────────────────────── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 2rem; }
+    .form-group      { grid-column: span 1; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    /* ── Tour summary block ────────────────────────────────────── */
+    .tour-summary {
+      grid-column: 1 / -1;
+      display: none;
+      background: rgba(45,90,69,0.05);
+      border: 1px solid rgba(45,90,69,0.15);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+    .tour-summary.visible { display: block; }
+    .tour-summary-name {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      color: var(--color-emerald);
+      margin-bottom: 0.25rem;
+    }
+    .tour-summary-meta {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.75rem;
+    }
+    .tour-summary-desc {
+      font-size: 0.875rem;
+      color: var(--color-ink);
+      line-height: 1.75;
+      margin-bottom: 0.75rem;
+    }
+    .tour-summary-highlights {
+      font-size: 0.8rem;
+      color: var(--color-muted);
+      line-height: 1.8;
+      border-top: 1px solid rgba(45,90,69,0.15);
+      padding-top: 0.75rem;
+    }
+    .tour-summary-highlights strong {
+      display: block;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-clay);
+      margin-bottom: 0.4rem;
+    }
+
+    /* ── Cost breakdown ────────────────────────────────────────── */
+    .cost-box {
+      grid-column: 1 / -1;
+      display: none;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.85rem;
+    }
+    .cost-box.visible { display: block; }
+    .cost-box h4 {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-clay);
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    .cost-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.875rem;
+      color: var(--color-muted);
+      padding: 0.35rem 0;
+    }
+    .cost-row + .cost-row { border-top: 1px solid rgba(122,92,68,0.1); }
+    .cost-row.total {
+      font-size: 1.15rem;
+      font-family: var(--font-display);
+      color: var(--color-ink);
+      border-top: 1px solid var(--color-border);
+      margin-top: 0.25rem;
+      padding-top: 0.75rem;
+    }
+    .cost-row.total span:last-child { color: var(--color-emerald); font-weight: 600; }
+
+    /* ── Message box ───────────────────────────────────────────── */
+    #messageBox {
+      grid-column: 1 / -1;
+      padding: 0.85rem 1.1rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      margin-bottom: 1.25rem;
+    }
+    #messageBox.hidden { display: none; }
+    #messageBox.info  { background: rgba(200,150,62,0.12); color: var(--color-clay); border: 1px solid rgba(200,150,62,0.3); }
+    #messageBox.error { background: rgba(185,74,72,0.08);  color: #8b2220;           border: 1px solid rgba(185,74,72,0.25); }
+
+    /* ── Payment options ───────────────────────────────────────── */
+    .payment-options {
+      grid-column: 1 / -1;
+      display: none;
+      margin-bottom: 0.25rem;
+    }
+    .payment-options.visible { display: block; }
+    .payment-options-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-clay);
+      font-weight: 500;
+      margin-bottom: 0.85rem;
+      display: block;
+    }
+    .payment-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .payment-option {
+      position: relative;
+      cursor: pointer;
+    }
+    .payment-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .payment-option-card {
+      display: block;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      transition: border-color 0.2s, background 0.2s;
+      cursor: pointer;
+    }
+    .payment-option input[type="radio"]:checked + .payment-option-card {
+      border-color: var(--color-emerald);
+      background: rgba(45,90,69,0.05);
+    }
+    .payment-option-card:hover {
+      border-color: var(--color-gold);
+    }
+    .payment-option-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--color-ink);
+      margin-bottom: 0.2rem;
+    }
+    .payment-option-amount {
+      font-size: 1.1rem;
+      font-family: var(--font-display);
+      color: var(--color-emerald);
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .payment-option-desc {
+      font-size: 0.775rem;
+      color: var(--color-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Submit ────────────────────────────────────────────────── */
+    .form-footer { grid-column: 1 / -1; border-top: 1px solid var(--color-border); padding-top: 1.75rem; }
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2rem;
+      border-radius: 9999px;
+      background: var(--color-clay);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+    .btn-submit:hover:not(:disabled) { background: var(--color-gold); color: var(--color-ink); }
+    .btn-submit:active:not(:disabled) { transform: scale(0.98); }
+    .btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+    .policy-box { grid-column: 1 / -1; }
+
+    /* ── Loading animations ────────────────────────────────────── */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes statusGlow {
+      0%, 100% { opacity: 1; text-shadow: 0 0 0px transparent; }
+      50%       { opacity: 0.65; text-shadow: 0 0 8px rgba(200,150,62,0.55); }
+    }
+    @keyframes dotPulse {
+      0%, 20%  { content: '.';   }
+      40%      { content: '..';  }
+      60%, 100%{ content: '...'; }
+    }
+
+    /* "Fetching tours…" status line */
+    #loadingStatus:not(.hidden) {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      animation: statusGlow 1.6s ease-in-out infinite;
+    }
+    #loadingStatus:not(.hidden)::before {
+      content: '';
+      display: inline-block;
+      width: 0.75em;
+      height: 0.75em;
+      border: 2px solid rgba(200,150,62,0.35);
+      border-top-color: var(--color-clay);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      flex-shrink: 0;
+    }
+
+    /* messageBox spinner (Stripe redirect) */
+    #messageBox.info.processing {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    #messageBox.info.processing::before {
+      content: '';
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(200,150,62,0.3);
+      border-top-color: var(--color-clay);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      flex-shrink: 0;
+    }
+    /* animated trailing dots on the processing text */
+    #processingDots::after {
+      content: '';
+      animation: dotPulse 1.2s steps(1) infinite;
+    }
+    /* ── Skeleton loader ───────────────────────────────────────── */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .skeleton {
+      border-radius: 4px;
+      background: linear-gradient(90deg,
+        rgba(122,92,68,0.08) 25%,
+        rgba(122,92,68,0.18) 50%,
+        rgba(122,92,68,0.08) 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.4s infinite linear;
+    }
+    .skeleton-select {
+      height: 2.4rem;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    /* WhatsApp contact in lede */
+    .book-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      padding: 0.55rem 1rem;
+      border-radius: 9999px;
+      background: #25D366;
+      color: #fff;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .book-whatsapp:hover { background: #128C7E; color: #fff; }
+    .book-whatsapp svg { width: 1rem; height: 1rem; fill: #fff; flex-shrink: 0; }
+  </style>
+<body>
+
+<!-- ── Header ── -->
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a href="../index.html" class="logo" aria-label="Wycliffe Travels home">
+      <div class="logo-mark">
+        <img src="../images/Wycliffe-Logo-100x100.png" alt="Wycliffe Travels Logo"/>
+      </div>
+      <span class="logo-text font-display">Wycliffe <em>Travels</em></span>
+    </a>
+    <a href="../" class="back-link">← Back</a>
+  </div>
+</header>
+
+<!-- ── Main ── -->
+<main class="book-main">
+
+  <!-- Left: lede -->
+  <div class="book-lede">
+    <p class="eyebrow"><span class="rule"></span>Reserve your tour</p>
+    <h1 class="book-headline">
+      Choose your <em>adventure.</em>
+    </h1>
+    <p class="book-desc">
+      Select your experience and secure your slot instantly. Every journey is private and made-to-measure — a specialist is on hand if you need us.
+    </p>
+    <div class="book-contact">
+      <a href="mailto:info@wycliffetravels.com">info@wycliffetravels.com</a>
+      <a href="https://wa.me/254724704711?text=Hi%20Wycliffe%2C%20I%27d%20like%20to%20enquire%20about%20booking%20a%20safari." class="book-whatsapp" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp Wycliffe
+      </a>
+    </div>
+  </div>
+
+  <!-- Right: form card -->
+  <div class="form-card">
+    <form id="bookingForm">
+      <div class="form-grid">
+
+        <!-- Tour select -->
+        <div class="form-group full">
+          <label for="tourSelect">Choose an Adventure</label>
+          <div class="select-wrap" id="tourSelectWrap">
+            <div class="skeleton skeleton-select" id="tourSkeleton" aria-hidden="true"></div>
+            <select id="tourSelect" required disabled style="display:none">
+              <option value="" selected disabled>Loading available tours…</option>
+            </select>
+          </div>
+          <small id="loadingStatus" class="status-text">Fetching tours…</small>
+        </div>
+
+        <!-- Tour summary (auto-populated on selection) -->
+        <div class="tour-summary" id="tourSummary">
+          <div class="tour-summary-name" id="summaryName"></div>
+          <div class="tour-summary-meta" id="summaryMeta"></div>
+          <div class="tour-summary-desc" id="summaryDesc"></div>
+          <div class="tour-summary-highlights" id="summaryHighlights">
+            <strong>Highlights</strong>
+            <span id="summaryHighlightsList"></span>
+          </div>
+        </div>
+
+        <!-- Cost breakdown (shown once tour + party size set) -->
+        <div class="cost-box" id="costBox">
+          <h4>Cost Summary</h4>
+          <div class="cost-row">
+            <span>Price per person</span>
+            <span id="costPerPerson">—</span>
+          </div>
+          <div class="cost-row">
+            <span>Party size</span>
+            <span id="costPartySize">—</span>
+          </div>
+          <div class="cost-row total">
+            <span>Total</span>
+            <span id="costTotal">—</span>
+          </div>
+          <div class="cost-row" id="depositRow" style="display:none;">
+            <span id="depositRowLabel">Due today</span>
+            <span id="costDeposit" style="color:var(--color-clay);font-weight:600;">—</span>
+          </div>
+        </div>
+
+        <!-- Payment options (only shown when 60+ days out) -->
+        <div class="payment-options" id="paymentOptions">
+          <span class="payment-options-label">Payment Method</span>
+          <div class="payment-toggle">
+            <label class="payment-option">
+              <input type="radio" name="paymentType" value="DEPOSIT" id="optDeposit" checked/>
+              <span class="payment-option-card">
+                <span class="payment-option-title">Pay Deposit</span>
+                <span class="payment-option-amount" id="depositOptionAmount">—</span>
+                <span class="payment-option-desc">30% now, balance due 60 days before departure</span>
+              </span>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="paymentType" value="FULL" id="optFull"/>
+              <span class="payment-option-card">
+                <span class="payment-option-title">Pay in Full</span>
+                <span class="payment-option-amount" id="fullOptionAmount">—</span>
+                <span class="payment-option-desc">Complete payment secured upfront</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Date -->
+        <div class="form-group full">
+          <label for="bookingDate">Select Date</label>
+          <input type="date" id="bookingDate" min="" required/>
+        </div>
+
+        <!-- Name -->
+        <div class="form-group">
+          <label for="customerName">Full Name</label>
+          <input type="text" id="customerName" placeholder="John Doe" required minlength="3"/>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="customerEmail">Email Address</label>
+          <input type="email" id="customerEmail" placeholder="john@example.com" required/>
+        </div>
+
+        <!-- Pickup address -->
+        <div class="form-group full">
+          <label for="pickupAddress">Pickup Address</label>
+          <input type="text" id="pickupAddress" placeholder="e.g., 123 Main St, New York, NY" required minlength="5"/>
+        </div>
+
+        <!-- Party size -->
+        <div class="form-group">
+          <label for="partySize">Party Size</label>
+          <input type="number" id="partySize" name="partySize" min="1" max="25" step="1" value="1" required/>
+        </div>
+
+        <!-- Policy -->
+        <div class="policy-box">
+          <h4>Payment, Cancellation &amp; Refund Policy</h4>
+          <p>
+            <strong>A non-refundable 30% deposit</strong> is required at the time of booking. <br/><br/>
+            <strong>If paid in-full:</strong><br/>
+            For cancellations made at least 24 hours before your scheduled tour, <strong>the remaining 70% will be fully refunded.</strong> <br/><br/>
+            <strong>Cancellations within 24 hours of departure are non-refundable.</strong><br/><br/>
+            For further inquiries, contact us at
+            <a href="mailto:info@wycliffetravels.com">info@wycliffetravels.com</a>.
+          </p>
+        </div>
+
+        <!-- Message -->
+        <div id="messageBox" class="hidden"></div>
+
+        <!-- Submit -->
+        <div class="form-footer">
+          <button type="submit" id="submitBtn" class="btn-submit" disabled>
+            Confirm your booking <span aria-hidden="true">→</span>
+          </button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+</main>
+
+<script>
+  /* ── CONFIG (formerly config.js) ──────────────────────────── */
+  window.ENV = {
+    API_BASE_URL: "https://wycliffetravels.com",
+    CDN_DOMAIN:   "wycliffetravels.com"
+  };
+
+  /* ── APP (formerly app.js) ─────────────────────────────────── */
+  const API_BASE_URL  = window.ENV.API_BASE_URL;
+  const dateInput     = document.getElementById('bookingDate');
+  const tourSelect    = document.getElementById('tourSelect');
+  const submitBtn     = document.getElementById('submitBtn');
+  const loadingStatus = document.getElementById('loadingStatus');
+
+  // Sticky header shadow on scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('site-header')
+      .classList.toggle('shadowed', window.scrollY > 10);
+  }, { passive: true });
+
+  // ── Init ──────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    // Minimum bookable date = today + 7 days
+    const earliest = new Date();
+    earliest.setDate(earliest.getDate() + 7);
+    dateInput.setAttribute('min', earliest.toISOString().split('T')[0]);
+    fetchAvailableTours();
+  });
+
+  // ── GET /tours ────────────────────────────────────────────────
+  async function fetchAvailableTours() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/tours`, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+
+      const tours = await response.json();
+
+      tourSelect.innerHTML = '<option value="" selected disabled>— Select a Tour —</option>';
+      tours.forEach(tour => {
+        const option = document.createElement('option');
+        option.value = tour.eventTypeId;
+        option.textContent = tour.tourName;
+        option.dataset.price       = tour.officialPrice;
+        option.dataset.description = tour.tourDescription || '';
+        option.dataset.highlights  = tour.highlights || '';
+        option.dataset.duration    = tour.duration || '';
+        option.dataset.category    = tour.tourCategory || '';
+        tourSelect.appendChild(option);
+      });
+
+      // Swap skeleton for real select
+      const skeleton = document.getElementById('tourSkeleton');
+      if (skeleton) skeleton.style.display = 'none';
+      tourSelect.style.display = '';
+      tourSelect.disabled = false;
+      submitBtn.disabled  = false;
+      loadingStatus.classList.add('hidden');
+
+      // Pre-select tour from ?tour= query param
+      const params   = new URLSearchParams(window.location.search);
+      const tourSlug = (params.get('tour') || '').toLowerCase().replace(/-/g, ' ');
+      if (tourSlug) {
+        const match = Array.from(tourSelect.options).find(opt =>
+          opt.textContent.toLowerCase().includes(tourSlug)
+        );
+        if (match) {
+          match.selected = true;
+          tourSelect.classList.add('has-value');
+          updateCostSummary();
+        }
+      }
+
+    } catch (error) {
+      console.error("Error fetching tours:", error);
+      const skeleton = document.getElementById('tourSkeleton');
+      if (skeleton) skeleton.style.display = 'none';
+      tourSelect.style.display = '';
+      loadingStatus.textContent = "⚠️ Failed to load tours. Please refresh the page.";
+      loadingStatus.style.color = "#8b2220";
+    }
+  }
+
+  // Colour select text once a real value is chosen
+  tourSelect.addEventListener('change', () => {
+    tourSelect.classList.toggle('has-value', tourSelect.value !== '');
+    updateCostSummary();
+  });
+
+  document.getElementById('partySize').addEventListener('input', updateCostSummary);
+  dateInput.addEventListener('change', updateCostSummary);
+
+  // Update deposit row when payment type changes
+  document.querySelectorAll('input[name="paymentType"]').forEach(radio => {
+    radio.addEventListener('change', updateCostSummary);
+  });
+
+  function updateCostSummary() {
+    const selected = tourSelect.options[tourSelect.selectedIndex];
+
+    if (!selected || !selected.value) {
+      document.getElementById('tourSummary').classList.remove('visible');
+      document.getElementById('costBox').classList.remove('visible');
+      document.getElementById('paymentOptions').classList.remove('visible');
+      document.getElementById('depositRow').style.display = 'none';
+      submitBtn.textContent = 'Confirm your booking →';
+      return;
+    }
+
+    const price     = parseFloat(selected.dataset.price) || 0;
+    const duration  = selected.dataset.duration;
+    const desc      = selected.dataset.description;
+    const highlights = selected.dataset.highlights;
+    const category  = selected.dataset.category;
+    const size      = Math.max(1, parseInt(document.getElementById('partySize').value) || 1);
+    const total     = price * size;
+    const deposit   = Math.round(total * 0.30);
+
+    // Tour summary
+    document.getElementById('summaryName').textContent = selected.textContent;
+    const metaParts = [];
+    if (category) metaParts.push(category);
+    if (duration) metaParts.push(`${duration} hours`);
+    document.getElementById('summaryMeta').textContent = metaParts.join(' · ');
+    document.getElementById('summaryDesc').textContent = desc;
+
+    const highlightsEl = document.getElementById('summaryHighlights');
+    if (highlights) {
+      document.getElementById('summaryHighlightsList').textContent = highlights;
+      highlightsEl.style.display = 'block';
+    } else {
+      highlightsEl.style.display = 'none';
+    }
+    document.getElementById('tourSummary').classList.add('visible');
+
+    // Cost breakdown
+    document.getElementById('costPerPerson').textContent = `$${price.toLocaleString()}`;
+    document.getElementById('costPartySize').textContent = `× ${size}`;
+    document.getElementById('costTotal').textContent     = `$${total.toLocaleString()}`;
+    document.getElementById('costBox').classList.add('visible');
+
+    // Payment options — only show if 60+ days away
+    const depositEligible = isDepositEligible(dateInput.value);
+    const paymentOptions  = document.getElementById('paymentOptions');
+
+    if (depositEligible) {
+      document.getElementById('depositOptionAmount').textContent = `$${deposit.toLocaleString()}`;
+      document.getElementById('fullOptionAmount').textContent    = `$${total.toLocaleString()}`;
+      paymentOptions.classList.add('visible');
+
+      const selectedPayment = document.querySelector('input[name="paymentType"]:checked');
+      const isDeposit = selectedPayment && selectedPayment.value === 'DEPOSIT';
+      const dueToday  = isDeposit ? deposit : total;
+
+      document.getElementById('depositRowLabel').textContent = isDeposit ? '30% deposit due today' : 'Due today';
+      document.getElementById('costDeposit').textContent     = `$${dueToday.toLocaleString()}`;
+      document.getElementById('depositRow').style.display    = 'flex';
+
+      submitBtn.textContent = isDeposit
+        ? `Pay $${deposit.toLocaleString()} deposit →`
+        : `Pay $${total.toLocaleString()} in full →`;
+    } else {
+      // Under 60 days — full payment only
+      paymentOptions.classList.remove('visible');
+      document.getElementById('depositRowLabel').textContent = 'Due today';
+      document.getElementById('costDeposit').textContent     = `$${total.toLocaleString()}`;
+      document.getElementById('depositRow').style.display    = 'flex';
+      submitBtn.textContent = `Pay $${total.toLocaleString()} in full →`;
+
+      // Force FULL payment type
+      const fullRadio = document.getElementById('optFull');
+      if (fullRadio) fullRadio.checked = true;
+    }
+  }
+
+  function isDepositEligible(dateVal) {
+    if (!dateVal) return false;
+    const departure = new Date(dateVal);
+    const today     = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffDays  = Math.floor((departure - today) / (1000 * 60 * 60 * 24));
+    return diffDays >= 60;
+  }
+
+  // ── POST /submit ──────────────────────────────────────────────
+  document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const messageBox    = document.getElementById('messageBox');
+    const tourId        = tourSelect.value;
+    const name          = document.getElementById('customerName').value.trim();
+    const email         = document.getElementById('customerEmail').value.trim();
+    const date          = dateInput.value;
+    const partySize     = document.getElementById('partySize').value;
+    const pickupAddress = document.getElementById('pickupAddress').value.trim();
+    const paymentType   = document.querySelector('input[name="paymentType"]:checked')?.value || 'FULL';
+
+    // Client-side validation
+    if (!tourId)                       { alert("Please select a tour.");              return; }
+    if (name.length < 3)              { alert("Please enter a valid full name.");     return; }
+    if (!email.includes('@'))         { alert("Please enter a valid email address."); return; }
+    if (!date)                        { alert("Please select a booking date.");       return; }
+    if (!partySize || partySize <= 0) { alert("Please provide a valid party size.");  return; }
+    if (!pickupAddress)               { alert("Please provide a pick-up location.");  return; }
+
+    // Payload — unchanged from original app.js
+    const bookingData = { tourId, date, name, email, partySize, pickupAddress, paymentType };
+
+    try {
+      messageBox.innerHTML   = 'Processing — redirecting to Stripe<span id="processingDots"></span>';
+      messageBox.className   = "info processing";
+      submitBtn.disabled     = true;
+
+      const response = await fetch(`${API_BASE_URL}/submit`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(bookingData)
+      });
+
+      if (response.ok) {
+        // Lambda returns { "url": "https://checkout.stripe.com/..." }
+        const result = await response.json();
+        window.location.href = result.url;
+      } else {
+        throw new Error(`API rejected the request (${response.status})`);
+      }
+
+    } catch (err) {
+      console.error("Booking submission error:", err);
+      messageBox.textContent = "Error: booking could not be completed. Please try again.";
+      messageBox.className   = "error";  // drops .processing, stops spinner
+      submitBtn.disabled     = false;
+    }
+  });
+</script>
+
+</body>
+</html>

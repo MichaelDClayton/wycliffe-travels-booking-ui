@@ -1,90 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4HZP8G01WP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4HZP8G01WP');
+  </script>
+  <a href="https://wa.me/1234567890" id="whatsapp-btn" target="_blank">Chat on WhatsApp</a>
+
+  <script>
+    document.getElementById('whatsapp-btn').addEventListener('click', function() {
+      gtag('event', 'whatsapp_click', {
+        event_category: 'engagement',
+        event_label: 'whatsapp_chat_button'
+      });
+    });
+  </script>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Wycliffe Travels — Authentic Kenyan Safari &amp; Tour Experiences</title>
+  <title>Wycliffe Travels — Authentic East African Safari &amp; Tour Experiences</title>
   <meta name="author" content="Wycliffe Travels"/>
-  <meta name="description" content="Hand-crafted Kenyan safaris through the Maasai Mara, Amboseli and beyond. Wildlife, culture and quiet luxury under the acacia."/>
+  <meta name="description" content="Hand-crafted East African safaris through Kenya and Tanzania — the Maasai Mara, Kilimanjaro, Zanzibar and beyond. Wildlife, culture and quiet luxury under the acacia."/>
   <meta property="og:type" content="website"/>
-  <meta property="og:title" content="Wycliffe Travels— Kenyan Safari &amp; Tours"/>
-  <meta property="og:description" content="Hand-crafted Kenyan safaris through the Maasai Mara, Amboseli and beyond."/>
-  <meta property="og:image" content="/src/assets/hero-savanna.jpg"/>
+  <meta property="og:title" content="Wycliffe Travels — East African Safari &amp; Tours"/>
+  <meta property="og:description" content="Hand-crafted East African safaris through Kenya and Tanzania — the Maasai Mara, Kilimanjaro, Zanzibar and beyond."/>
+  <meta property="og:image" content="https://www.wycliffetravels.com/images/hero-savanna.jpg"/>
   <meta name="twitter:card" content="summary"/>
-  <meta name="twitter:site" content="@WycliffeTravels"/>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 
+  <link rel="stylesheet" href="/css/shared.css"/>
   <style>
-    /* ── Design Tokens ───────────────────────────────────────────── */
-
-    :root {
-      --color-ink:     #1a1712;
-      --color-clay:    #7a5c44;
-      --color-cream:   #f5efe6;
-      --color-gold:    #c8963e;
-      --color-emerald: #2d5a45;
-      --color-muted:   #8a7d72;
-
-      --font-display: 'Cormorant Garamond', Georgia, serif;
-      --font-body:    'DM Sans', system-ui, sans-serif;
-    }
-
-    /* ── Reset ───────────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--font-body);
-      background: var(--color-cream);
-      color: var(--color-ink);
-      -webkit-font-smoothing: antialiased;
-    }
-    img { display: block; max-width: 100%; }
-    a { color: inherit; text-decoration: none; }
-    ul { list-style: none; }
-
-    /* ── Utility Classes ─────────────────────────────────────────── */
-
-    /* Colors */
+    /* ── Utility (index-specific color helpers) ──────────────────── */
     .text-cream   { color: var(--color-cream); }
     .text-clay    { color: var(--color-clay); }
     .text-gold    { color: var(--color-gold); }
     .text-emerald { color: var(--color-emerald); }
     .text-ink     { color: var(--color-ink); }
     .text-muted   { color: var(--color-muted); }
-
     .bg-ink    { background-color: var(--color-ink); }
     .bg-cream  { background-color: var(--color-cream); }
     .bg-emerald{ background-color: var(--color-emerald); }
 
-    /* Typography */
-    .font-display { font-family: var(--font-display); }
-
-    .eyebrow {
-      font-family: var(--font-body);
-      font-size: 0.65rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--color-muted);
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .eyebrow--gold  { color: var(--color-gold); }
-    .eyebrow--cream { color: rgba(245,239,230,0.8); }
-
-    .rule {
-      display: inline-block;
-      width: 2rem;
-      height: 1px;
-      background: currentColor;
-      opacity: 0.5;
-      flex-shrink: 0;
-    }
-
-    /* Layout */
+    /* ── Container ───────────────────────────────────────────────── */
     .container {
       width: 100%;
       max-width: 88rem;
@@ -97,11 +61,12 @@
       .container { padding-left: 2.5rem; padding-right: 2.5rem; }
     }
 
-    /* ── HEADER ──────────────────────────────────────────────────── */
+    /* ── HEADER (index uses fixed + scrolled) ────────────────────── */
     .site-header {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 30;
+      background: transparent;
+      border-bottom: none;
       transition: background 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
     }
     .site-header.scrolled {
@@ -110,6 +75,11 @@
       -webkit-backdrop-filter: blur(12px);
       box-shadow: 0 1px 0 rgba(245,239,230,0.08);
     }
+    /* Logo text: white over hero image, brand colors once header darkens */
+    .logo-text { color: var(--color-cream) !important; }
+    .logo-text em { color: rgba(245,239,230,0.75) !important; }
+    .site-header.scrolled .logo-text { color: #cc2200 !important; }
+    .site-header.scrolled .logo-text em { color: #2d6e2d !important; }
     .header-inner {
       display: flex;
       align-items: center;
@@ -118,119 +88,6 @@
       padding-bottom: 1.5rem;
       color: var(--color-cream);
     }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .logo-mark {
-      height: 2.5rem;
-      width: 2.5rem;
-      border-radius: 50%;
-      border: 1px solid rgba(122,92,68,0.4);
-      background: rgba(245,239,230,0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.625rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--color-clay);
-      flex-shrink: 0;
-    }
-    .logo-text {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      line-height: 1;
-      color: var(--color-clay);
-    }
-    .logo-text em { font-style: italic; color: var(--color-emerald); }
-
-    .site-nav {
-      display: none;
-      align-items: center;
-      gap: 2.25rem;
-      font-size: 0.875rem;
-    }
-    @media (min-width: 768px) { .site-nav { display: flex; } }
-    .site-nav a {
-      color: var(--color-cream);
-      transition: color 0.2s;
-    }
-    .site-nav a:hover { color: var(--color-gold); }
-
-    /* Mobile hamburger */
-    .nav-toggle {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      width: 2rem;
-      height: 2rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 2px;
-      flex-shrink: 0;
-    }
-    @media (min-width: 768px) { .nav-toggle { display: none; } }
-    .nav-toggle span {
-      display: block;
-      width: 100%;
-      height: 1px;
-      background: var(--color-cream);
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      transform-origin: center;
-    }
-    .nav-toggle.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-    .nav-toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-    .nav-toggle.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-    /* Mobile nav drawer */
-    .mobile-nav {
-      display: none;
-      flex-direction: column;
-      gap: 0;
-      background: rgba(26,23,18,0.97);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 0 1.5rem 1.5rem;
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height 0.4s ease, padding 0.3s ease;
-    }
-    .mobile-nav.open {
-      display: flex;
-      max-height: 20rem;
-      padding-bottom: 1.5rem;
-    }
-    .mobile-nav a {
-      color: var(--color-cream);
-      font-size: 0.875rem;
-      padding: 0.9rem 0;
-      border-bottom: 1px solid rgba(245,239,230,0.1);
-      transition: color 0.2s;
-    }
-    .mobile-nav a:last-child { border-bottom: none; }
-    .mobile-nav a:hover { color: var(--color-gold); }
-
-    /* Active nav link */
-    .site-nav a.active { color: var(--color-gold); }
-
-    .btn-header {
-      display: none;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.625rem 1.25rem;
-      border-radius: 9999px;
-      background: var(--color-cream);
-      color: var(--color-clay);
-      font-size: 0.875rem;
-      font-weight: 500;
-      transition: background 0.2s, color 0.2s;
-    }
-    @media (min-width: 768px) { .btn-header { display: inline-flex; } }
-    .btn-header:hover { background: var(--color-gold); color: var(--color-ink); }
 
     /* ── HERO ────────────────────────────────────────────────────── */
     .hero {
@@ -246,6 +103,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      filter: brightness(0.6);
     }
     .hero-overlay {
       position: absolute;
@@ -276,7 +134,6 @@
       max-width: 62rem;
     }
     .hero-headline em { font-style: italic; color: var(--color-gold); }
-
     .hero-body {
       margin-top: 2.5rem;
       display: grid;
@@ -293,32 +150,6 @@
       line-height: 1.7;
     }
     .hero-ctas { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 1rem 1.75rem;
-      border-radius: 9999px;
-      background: var(--color-gold);
-      color: var(--color-ink);
-      font-weight: 500;
-      transition: background 0.2s, color 0.2s;
-    }
-    .btn-primary:hover { background: var(--color-cream); }
-
-    .btn-outline {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 1rem 1.75rem;
-      border-radius: 9999px;
-      border: 1px solid rgba(245,239,230,0.4);
-      color: var(--color-cream);
-      transition: background 0.2s;
-    }
-    .btn-outline:hover { background: rgba(245,239,230,0.1); }
-
     .hero-footer {
       margin-top: 4rem;
       display: flex;
@@ -343,7 +174,6 @@
     @media (min-width: 1024px) {
       .stories-section { padding-top: 8rem; padding-bottom: 8rem; }
     }
-
     .stories-header {
       display: flex;
       align-items: flex-end;
@@ -371,7 +201,6 @@
     @media (min-width: 768px) { .stories-all-link { display: inline; } }
     .stories-all-link:hover { color: var(--color-clay); }
 
-    /* Grid */
     .stories-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
@@ -379,24 +208,14 @@
     }
     @media (min-width: 1024px) { .stories-grid { gap: 2.5rem; } }
 
-    .article-feature {
-      grid-column: span 12;
-    }
+    .article-feature { grid-column: span 12; }
     @media (min-width: 1024px) { .article-feature { grid-column: span 7; } }
-
-    .article-feature .img-wrap {
-      overflow: hidden;
-      border-radius: 2px;
-    }
+    .article-feature .img-wrap { overflow: hidden; border-radius: 2px; }
     .article-feature img {
-      width: 100%;
-      height: 520px;
-      object-fit: cover;
-      transition: transform 1.2s ease;
+      width: 100%; height: 520px; object-fit: cover; transition: transform 1.2s ease;
     }
     @media (min-width: 1024px) { .article-feature img { height: 640px; } }
     .article-feature:hover img { transform: scale(1.05); }
-
     .article-feature h3 {
       margin-top: 0.75rem;
       font-family: var(--font-display);
@@ -406,10 +225,7 @@
       max-width: 36rem;
     }
     .article-feature p.desc {
-      margin-top: 1rem;
-      max-width: 36rem;
-      color: var(--color-muted);
-      line-height: 1.7;
+      margin-top: 1rem; max-width: 36rem; color: var(--color-muted); line-height: 1.7;
     }
 
     .stories-aside {
@@ -423,43 +239,54 @@
     .reel-card {
       position: relative;
       aspect-ratio: 9/16;
-      background: rgba(45,90,69,0.1);
+      background: rgba(26,23,18,0.8);
       border: 1px solid rgba(122,92,68,0.15);
       border-radius: 2px;
       overflow: hidden;
     }
+    .reel-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center bottom;
+    }
     .reel-inner {
       position: absolute;
       inset: 0;
+      z-index: 10;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      color: rgba(122,92,68,0.7);
+      justify-content: flex-end;
       text-align: center;
-      padding: 1rem;
+      padding: 1.25rem;
+      background: linear-gradient(to bottom, transparent 50%, rgba(26,23,18,0.45) 100%);
+      cursor: pointer;
     }
     .reel-play {
       height: 3.5rem;
       width: 3.5rem;
       border-radius: 50%;
-      border: 1px solid rgba(122,92,68,0.4);
+      border: 2px solid rgba(245,239,230,0.9);
+      background: rgba(26,23,18,0.3);
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 0.75rem;
+      font-size: 1rem;
+      color: #fff;
+      transition: background 0.2s, border-color 0.2s;
     }
+    .reel-inner:hover .reel-play { background: rgba(200,150,62,0.8); border-color: var(--color-gold); }
     .reel-label {
-      font-size: 0.625rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--color-muted);
+      font-size: 0.625rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(245,239,230,0.9); text-shadow: 0 1px 3px rgba(0,0,0,0.6);
     }
     .reel-title {
-      margin-top: 0.5rem;
-      font-family: var(--font-display);
-      font-size: 1.25rem;
-      color: var(--color-clay);
+      margin-top: 0.4rem; font-family: var(--font-display); font-size: 1.1rem;
+      color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,0.7);
     }
 
     .blockquote-card {
@@ -476,34 +303,17 @@
       line-height: 1.4;
     }
     .blockquote-card cite {
-      display: block;
-      margin-top: 0.75rem;
-      font-size: 0.875rem;
-      color: var(--color-muted);
-      font-style: normal;
+      display: block; margin-top: 0.75rem; font-size: 0.875rem;
+      color: var(--color-muted); font-style: normal;
     }
 
-    .article-small {
-      grid-column: span 12;
-      margin-top: 2rem;
-    }
+    .article-small { grid-column: span 12; margin-top: 2rem; }
     @media (min-width: 768px) { .article-small { grid-column: span 6; } }
     @media (min-width: 1024px) { .article-small { grid-column: span 4; } }
-
-    .article-small .img-wrap {
-      overflow: hidden;
-      border-radius: 2px;
-    }
-    .article-small img {
-      width: 100%;
-      height: 18rem;
-      object-fit: cover;
-    }
+    .article-small .img-wrap { overflow: hidden; border-radius: 2px; }
+    .article-small img { width: 100%; height: 18rem; object-fit: cover; }
     .article-small h3 {
-      margin-top: 0.5rem;
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      color: var(--color-ink);
+      margin-top: 0.5rem; font-family: var(--font-display); font-size: 1.5rem; color: var(--color-ink);
     }
 
     .index-card {
@@ -519,23 +329,13 @@
       min-height: 18rem;
     }
     @media (min-width: 1024px) { .index-card { grid-column: span 4; padding: 2.5rem; } }
-
     .index-card ul {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      line-height: 1.2;
+      margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;
+      font-family: var(--font-display); font-size: 1.5rem; line-height: 1.2;
     }
     .index-card a {
-      margin-top: 2rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--color-gold);
-      transition: color 0.2s;
+      margin-top: 2rem; display: inline-flex; align-items: center;
+      gap: 0.5rem; color: var(--color-gold); transition: color 0.2s;
     }
     .index-card a:hover { color: var(--color-cream); }
 
@@ -557,7 +357,6 @@
       max-width: 42rem;
     }
     .journeys-headline em { font-style: italic; color: var(--color-gold); }
-
     .journeys-list {
       margin-top: 4rem;
       border-top: 1px solid rgba(245,239,230,0.15);
@@ -576,17 +375,9 @@
     }
     .journey-row:last-child { border-bottom: none; }
     .journey-row:hover { background: rgba(245,239,230,0.04); }
-
-    .journey-num {
-      grid-column: span 2;
-    }
+    .journey-num { grid-column: span 2; }
     @media (min-width: 768px) { .journey-num { grid-column: span 1; } }
-    .journey-num span {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      color: var(--color-gold);
-    }
-
+    .journey-num span { font-family: var(--font-display); font-size: 1.5rem; color: var(--color-gold); }
     .journey-name {
       grid-column: span 10;
       font-family: var(--font-display);
@@ -595,31 +386,211 @@
     }
     @media (min-width: 768px) { .journey-name { grid-column: span 6; } }
     .journey-row:hover .journey-name { color: var(--color-gold); }
-
-    .journey-nights {
-      grid-column: span 6;
-      font-size: 0.875rem;
-      color: rgba(245,239,230,0.7);
-    }
+    .journey-nights { grid-column: span 6; font-size: 0.875rem; color: rgba(245,239,230,0.7); }
     @media (min-width: 768px) { .journey-nights { grid-column: span 2; } }
-
-    .journey-price {
-      grid-column: span 6;
-      font-size: 0.875rem;
-      color: rgba(245,239,230,0.7);
-    }
+    .journey-price { grid-column: span 6; font-size: 0.875rem; color: rgba(245,239,230,0.7); }
     @media (min-width: 768px) { .journey-price { grid-column: span 2; } }
-
     .journey-arrow {
-      display: none;
-      grid-column: span 1;
-      text-align: right;
-      color: var(--color-gold);
-      opacity: 0;
-      transition: opacity 0.2s;
+      display: none; grid-column: span 1; text-align: right;
+      color: var(--color-gold); opacity: 0; transition: opacity 0.2s;
     }
     @media (min-width: 768px) { .journey-arrow { display: block; } }
     .journey-row:hover .journey-arrow { opacity: 1; }
+    .journey-desc {
+      display: none;
+      grid-column: 1 / -1;
+      font-size: 0.8125rem;
+      color: rgba(245,239,230,0.55);
+      padding-left: calc(100% / 12 * 1 + 1rem);
+      padding-top: 0.25rem;
+      padding-bottom: 0.5rem;
+      line-height: 1.65;
+    }
+    @media (min-width: 768px) { .journey-desc { display: block; } }
+
+    /* Story read link */
+    .story-read-link {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.7rem 1.5rem;
+      border-radius: 9999px;
+      background: var(--color-emerald);
+      color: var(--color-cream);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      transition: background 0.2s, color 0.2s;
+    }
+    .story-read-link:hover { background: var(--color-gold); color: var(--color-ink); }
+
+    .feature-headline-link {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .feature-headline-link:hover { color: var(--color-clay); }
+
+    /* ── TESTIMONIALS ────────────────────────────────────────────── */
+    .testimonials-section {
+      background: var(--color-ink);
+      color: var(--color-cream);
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+    }
+    @media (min-width: 1024px) {
+      .testimonials-section { padding-top: 8rem; padding-bottom: 8rem; }
+    }
+    .testimonials-headline {
+      margin-top: 1rem;
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      line-height: 1.05;
+      max-width: 36rem;
+    }
+    .testimonials-headline em { font-style: italic; color: var(--color-gold); }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+    }
+    @media (min-width: 768px) { .testimonials-grid { grid-template-columns: repeat(3, 1fr); } }
+    .testimonial-card {
+      border: 1px solid rgba(245,239,230,0.1);
+      border-radius: 2px;
+      padding: 2rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      transition: border-color 0.2s;
+    }
+    .testimonial-card:hover { border-color: rgba(200,150,62,0.35); }
+    .testimonial-stars { color: var(--color-gold); letter-spacing: 0.1em; font-size: 0.9rem; }
+    .testimonial-quote {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-style: italic;
+      color: rgba(245,239,230,0.9);
+      line-height: 1.55;
+      flex: 1;
+    }
+    .testimonial-author {
+      border-top: 1px solid rgba(245,239,230,0.1);
+      padding-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .testimonial-name { font-size: 0.875rem; font-weight: 500; color: var(--color-cream); }
+    .testimonial-trip { font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-gold); }
+
+    /* ── SAFETY TEASER ───────────────────────────────────────────── */
+    .safety-teaser {
+      background: var(--color-cream);
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+      border-top: 1px solid rgba(122,92,68,0.12);
+    }
+    .safety-teaser-inner {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      align-items: center;
+      background: var(--color-emerald);
+      border-radius: 4px;
+      padding: 3rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    @media (min-width: 768px) {
+      .safety-teaser-inner {
+        grid-template-columns: 1fr auto;
+        padding: 3.5rem 4rem;
+      }
+    }
+    .safety-teaser-inner::before {
+      content: '🛡';
+      position: absolute;
+      right: -10px;
+      top: -20px;
+      font-size: 9rem;
+      opacity: 0.07;
+      pointer-events: none;
+      line-height: 1;
+    }
+    .safety-teaser-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1.25rem;
+    }
+    .safety-pill {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      border: 1px solid rgba(201,168,76,0.4);
+      color: var(--color-gold);
+    }
+    .safety-teaser h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--color-cream);
+      margin-bottom: 0.9rem;
+    }
+    .safety-teaser h2 em { font-style: italic; color: var(--color-gold); }
+    .safety-teaser p {
+      font-size: 0.9rem;
+      color: rgba(245,239,230,0.72);
+      line-height: 1.75;
+      max-width: 480px;
+    }
+    .safety-teaser-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 1.6rem;
+    }
+    .safety-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: rgba(245,239,230,0.8);
+    }
+    .safety-item-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--color-gold);
+      flex-shrink: 0;
+    }
+    .safety-teaser-cta {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2rem;
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.6);
+      color: var(--color-gold);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+      white-space: nowrap;
+    }
+    .safety-teaser-cta:hover {
+      background: var(--color-gold);
+      border-color: var(--color-gold);
+      color: var(--color-ink);
+    }
 
     /* ── FOOTER ──────────────────────────────────────────────────── */
     .site-footer {
@@ -628,28 +599,16 @@
       padding-top: 4rem;
       padding-bottom: 4rem;
     }
-    .footer-grid {
-      display: grid;
-      gap: 2.5rem;
-    }
+    .footer-grid { display: grid; gap: 2.5rem; }
     @media (min-width: 768px) { .footer-grid { grid-template-columns: repeat(3, 1fr); } }
-
     .footer-desc {
-      margin-top: 1.25rem;
-      font-size: 0.875rem;
-      color: var(--color-muted);
-      max-width: 18rem;
-      line-height: 1.6;
+      margin-top: 1.25rem; font-size: 0.875rem; color: var(--color-muted);
+      max-width: 18rem; line-height: 1.6;
     }
     .footer-col .eyebrow { margin-bottom: 0.75rem; }
-    .footer-col p, .footer-col a {
-      font-size: 0.875rem;
-      line-height: 2;
-      color: var(--color-ink);
-    }
+    .footer-col p, .footer-col a { font-size: 0.875rem; line-height: 2; color: var(--color-ink); }
     .footer-col a { display: block; transition: color 0.2s; }
     .footer-col a:hover { color: var(--color-clay); }
-
     .footer-bottom {
       margin-top: 3rem;
       padding-top: 1.5rem;
@@ -659,27 +618,52 @@
       font-size: 0.75rem;
       color: var(--color-muted);
     }
+    /* ── WHATSAPP FLOAT ──────────────────────────────────────────── */
+    .whatsapp-fab {
+      position: fixed;
+      bottom: 1.75rem;
+      right: 1.75rem;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: #25D366;
+      color: #fff;
+      border-radius: 9999px;
+      padding: 0.75rem 1.25rem 0.75rem 0.9rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.35);
+      transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+      text-decoration: none;
+    }
+    .whatsapp-fab:hover {
+      background: #128C7E;
+      box-shadow: 0 6px 28px rgba(37,211,102,0.45);
+      transform: translateY(-2px);
+    }
+    .whatsapp-fab svg { flex-shrink: 0; width: 1.25rem; height: 1.25rem; fill: #fff; }
+    @media (max-width: 480px) { .whatsapp-fab span { display: none; } }
 
-    /* ── Scroll Reveal ───────────────────────────────────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
+    /* Footer social icons */
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
     }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .footer-social a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid var(--color-border);
+      border-radius: 50%;
+      color: var(--color-muted);
+      font-size: 0.75rem;
+      transition: border-color 0.2s, color 0.2s;
     }
-    /* Staggered children */
-    .reveal-stagger > * {
-      opacity: 0;
-      transform: translateY(22px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .reveal-stagger.visible > *:nth-child(1) { opacity:1; transform:translateY(0); transition-delay: 0s;    }
-    .reveal-stagger.visible > *:nth-child(2) { opacity:1; transform:translateY(0); transition-delay: 0.12s; }
-    .reveal-stagger.visible > *:nth-child(3) { opacity:1; transform:translateY(0); transition-delay: 0.24s; }
-    .reveal-stagger.visible > *:nth-child(4) { opacity:1; transform:translateY(0); transition-delay: 0.36s; }
+    .footer-social a:hover { border-color: var(--color-gold); color: var(--color-gold); }
   </style>
 </head>
 <body>
@@ -690,18 +674,20 @@
   <header class="site-header" id="site-header">
     <div class="container header-inner">
       <a href="/" class="logo" aria-label="Home">
-        <div class="logo-mark" aria-label="Logo"><img src="https://clay-tech-public-assets.s3.us-east-1.amazonaws.com/Wycliffe+Travels+Logo.png"/></div>
+        <div class="logo-mark" aria-label="Logo"><img src="/images/Wycliffe-Logo-100x100.png"/></div>
         <span class="logo-text font-display">Wycliffe <em>Travels</em></span>
       </a>
 
       <nav class="site-nav" id="site-nav" aria-label="Main navigation">
         <a href="#journeys" data-section="journeys">Journeys</a>
+        <a href="./safety.html" data-section="contact">Preparation & Safety</a>
         <a href="#stories"  data-section="stories">Stories</a>
+        <a href="./gallery.html" data-section="gallery">Gallery</a>
         <a href="#about"    data-section="about">About</a>
-        <a href="/bk/manage.html">Manage Booking</a>
+        <a href="manage.html">Manage Booking</a>
       </nav>
 
-      <a href="/bk/create.html" class="btn-header">
+      <a href="create.html" class="btn-header">
         Begin Your Safari <span aria-hidden="true">→</span>
       </a>
 
@@ -714,19 +700,21 @@
     <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
       <a href="#journeys">Journeys</a>
       <a href="#stories">Stories</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="safety.html">Preparation & Safety</a>
       <a href="#about">About</a>
-      <a href="/bk/manage.html">Manage Booking</a>
-      <a href="/bk/create.html" style="color:var(--color-gold)">Begin Your Safari →</a>
+      <a href="manage.html">Manage Booking</a>
+      <a href="create.html" style="color:var(--color-gold)">Begin Your Safari →</a>
     </nav>
   </header>
 
   <!-- ── HERO ── -->
   <section class="hero">
     <img
-      src="/src/assets/hero-savanna.jpg"
-      alt="Elephants walking across the Kenyan savanna at sunset beneath an acacia tree, with Mount Kilimanjaro on the horizon"
-      width="1920" height="1280"
-      class="hero-img"
+            src="/images/hero-savanna.jpg"
+            alt="Elephants walking across the Kenyan savanna at sunset beneath an acacia tree, with Mount Kilimanjaro on the horizon"
+            width="1920" height="1280"
+            class="hero-img"
     />
     <div class="hero-overlay"></div>
 
@@ -742,11 +730,11 @@
 
       <div class="hero-body">
         <p class="hero-desc">
-          Private safaris and tours through the Maasai Mara, Nairobi National Park and the Funzi Island...and more — guided by Kenyans who know every track, every silhouette, every silence worth keeping.
+          Private safaris and tours through Kenya and Tanzania — the Maasai Mara, Nairobi National Park, Funzi Island, Kilimanjaro and Zanzibar — guided by East Africans who know every track, every silhouette, every silence worth keeping.
         </p>
         <div class="hero-ctas">
-          <a href="/bk/create.html" class="btn-primary">Book a Journey <span aria-hidden="true">→</span></a>
-          <a href="/bk/manage.html" class="btn-outline">Manage Booking</a>
+          <a href="create.html" class="btn-primary">Book a Journey <span aria-hidden="true">→</span></a>
+          <a href="manage.html" class="btn-outline">Manage Booking</a>
         </div>
       </div>
 
@@ -771,68 +759,82 @@
             Stories told slowly, by people who were there.
           </h2>
         </div>
-        <a href="#journeys" class="stories-all-link">All journeys →</a>
+        <a href="#journeys" class="stories-all-link">Some of our journeys →</a>
       </div>
 
       <div class="stories-grid">
 
         <!-- Feature article -->
         <article class="article-feature reveal">
-          <div class="img-wrap">
+          <a href="create.html?tour=maasai-mara" class="img-wrap" aria-label="Book the Maasai Mara journey">
             <img
-              src="/src/assets/lion.jpg"
-              alt="Portrait of a male lion in golden Mara grass"
-              width="900" height="1100"
-              loading="lazy"
+                    src="/images/lion.jpg"
+                    alt="Portrait of a male lion in golden Mara grass"
+                    width="900" height="1100"
+                    loading="lazy"
             />
-          </div>
+          </a>
           <p class="eyebrow" style="margin-top:1.5rem;">Feature · Maasai Mara</p>
-          <h3>The lion who learned the sound of our Land Cruiser.</h3>
+          <h3><a href="create.html?tour=maasai-mara" class="feature-headline-link">The lion who learned the sound of our Land Cruiser.</a></h3>
           <p class="desc">Four mornings, one coalition of brothers, and a guide who has tracked them since they were cubs. A dispatch from the Mara Triangle in the long rains.</p>
+          <a href="create.html?tour=maasai-mara" class="story-read-link">Book the Maasai Mara →</a>
         </article>
 
         <!-- Aside: reels + quote -->
         <aside class="stories-aside reveal" style="transition-delay:0.15s">
           <div class="reel-card">
+            <video
+                    class="reel-video"
+                    src="/videos/dolphins-1.mp4"
+                    poster="/images/dolphins-1-thumbnail.png"
+                    playsinline
+                    muted
+                    loop
+            ></video>
             <div class="reel-inner">
-              <div class="reel-play"><span style="margin-left:3px;color:var(--color-clay)"><!--▶--><video width="640" height="360" controls poster="thumbnail.jpg">
-  <source src="/videos/WhatsApp Video 2026-05-11 at 04.24.12.mp4" type="video/mp4">
-  <!--<source src="video.webm" type="video/webm">-->
-  Your browser does not support the video tag.
-</video></span></div>
+              <div class="reel-play">
+                <span class="play-icon" aria-hidden="true">▶</span>
+                <span class="pause-icon" aria-hidden="true" style="display:none">⏸</span>
+              </div>
               <p class="reel-label">Reel · 9:16</p>
-              <p class="reel-title font-display">Lake Funzi - Swimming with the dolphins</p>
+              <p class="reel-title font-display">Wasini Island - dolphin & whale watching</p>
             </div>
           </div>
           <div class="reel-card">
+            <video
+                    class="reel-video"
+                    src="/videos/elephants-1.mp4"
+                    poster="/images/elephants-1-thumbnail.png"
+                    playsinline
+                    muted
+                    loop
+            ></video>
             <div class="reel-inner">
-              <div class="reel-play"><span style="margin-left:3px;color:var(--color-clay)">▶</span></div>
+              <div class="reel-play">
+                <span class="play-icon" aria-hidden="true">▶</span>
+                <span class="pause-icon" aria-hidden="true" style="display:none">⏸</span>
+              </div>
               <p class="reel-label">Reel · 9:16</p>
-              <p class="reel-title font-display">Camp evenings</p>
+              <p class="reel-title font-display">Elephants huddled in the wild.</p>
             </div>
-          </div>
-          <div class="blockquote-card">
-            <p class="eyebrow">From the field</p>
-            <blockquote>"The Mara doesn't perform. You arrive quietly, and it eventually decides to show you something."</blockquote>
-            <cite>— Joseph Sankale, Head Guide</cite>
           </div>
         </aside>
 
         <!-- Small articles -->
         <article class="article-small reveal" style="transition-delay:0.05s">
           <div class="img-wrap">
-            <img src="/src/assets/balloon.jpg" alt="Hot air balloon over zebras at sunrise" width="900" height="700" loading="lazy"/>
+            <img src="/images/giraffes-1.png" alt="Mother giraffe feeding her young" width="900" height="700" loading="lazy"/>
           </div>
           <p class="eyebrow" style="margin-top:1.25rem;">Amboseli</p>
-          <h3>A balloon, before the sun is honest.</h3>
+          <h3>Mother giraffe feeding her young.</h3>
         </article>
 
         <article class="article-small reveal" style="transition-delay:0.15s">
           <div class="img-wrap">
-            <img src="/src/assets/camp.jpg" alt="Lantern-lit luxury safari tents at dusk" width="900" height="700" loading="lazy"/>
+            <img src="/images/migration-1.png" alt="The herd on the move." width="900" height="700" loading="lazy"/>
           </div>
           <p class="eyebrow" style="margin-top:1.25rem;">Laikipia</p>
-          <h3>Canvas, lanterns, and the language of fire.</h3>
+          <h3>The herd on the move.</h3>
         </article>
 
         <!-- Index card -->
@@ -849,7 +851,7 @@
               <li>04 · Lamu, after the safari</li>
             </ul>
           </div>
-          <a href="/bk/create.html">Design your edition →</a>
+          <a href="create.html">Plan your journey →</a>
         </aside>
 
       </div>
@@ -864,43 +866,114 @@
         Signature Journeys
       </p>
       <h2 class="journeys-headline font-display reveal" style="transition-delay:0.1s">
-        Four ways to <em>disappear</em> into Kenya.
+        Four ways to <em>disappear</em> into East Africa.
       </h2>
 
       <div class="journeys-list reveal-stagger" style="margin-top:4rem">
 
-        <a href="/bk/create.html" class="journey-row">
+        <a href="create.html?tour=kilimanjaro" class="journey-row">
           <div class="journey-num"><span>01</span></div>
           <div class="journey-name font-display">Mount Kilimanjaro Climbing</div>
-          <div class="journey-nights">6 nights</div>
+          <div class="journey-nights">6 nights · Tanzania</div>
           <div class="journey-price">from $1,990</div>
           <div class="journey-arrow">→</div>
+          <p class="journey-desc">Summit Africa's highest peak on a guided 6-night ascent. Routes via Machame or Lemosho, with acclimatisation camps and certified mountain guides throughout.</p>
         </a>
 
-        <a href="/bk/create.html" class="journey-row">
+        <a href="create.html?tour=tanzania-special" class="journey-row">
           <div class="journey-num"><span>02</span></div>
-          <div class="journey-name font-display">Zanzibar</div>
-          <div class="journey-nights">2 nights</div>
-          <div class="journey-price">from $2,400</div>
+          <div class="journey-name font-display">Tanzania Special</div>
+          <div class="journey-nights">6 nights</div>
+          <div class="journey-price">from $3,200</div>
           <div class="journey-arrow">→</div>
+          <p class="journey-desc">Lake Manyara, Tarangire, Serengeti, Ngorongoro Crater, Arusha.</p>
         </a>
 
-        <a href="/bk/create.html" class="journey-row">
+        <a href="create.html?tour=maasai-mara" class="journey-row">
           <div class="journey-num"><span>03</span></div>
           <div class="journey-name font-display">Maasai Mara</div>
           <div class="journey-nights">2 nights</div>
           <div class="journey-price">from $3,000</div>
           <div class="journey-arrow">→</div>
+          <p class="journey-desc">Private game drives in one of the world's great wildlife reserves. Big Five encounters, Maasai culture, and the Great Migration (July–October).</p>
         </a>
 
-        <a href="/bk/create.html" class="journey-row">
+        <a href="create.html?tour=tsavo" class="journey-row">
           <div class="journey-num"><span>04</span></div>
           <div class="journey-name font-display">Tsavo East</div>
           <div class="journey-nights">1 night</div>
           <div class="journey-price">from $400</div>
           <div class="journey-arrow">→</div>
+          <p class="journey-desc">Kenya's largest national park — red elephants, dramatic lava flows, and the famous man-eating lion country. An ideal first safari from Nairobi.</p>
         </a>
 
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TESTIMONIALS ── -->
+  <section class="testimonials-section">
+    <div class="container">
+      <p class="eyebrow eyebrow--gold reveal">
+        <span class="rule"></span>
+        Guest Voices
+      </p>
+      <h2 class="testimonials-headline font-display reveal" style="transition-delay:0.1s">
+        Stories from people who <em>made the journey.</em>
+      </h2>
+      <div class="testimonials-grid reveal-stagger" style="margin-top:3.5rem">
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"Wycliffe knew every animal by name, every track by memory. We saw a leopard on day one and a rhino on day three. Completely unforgettable."</p>
+          <div class="testimonial-author">
+            <span class="testimonial-name">James & Sarah M.</span>
+            <span class="testimonial-trip">Maasai Mara · 3 nights</span>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"From the airport pickup to the final sundowner, every detail was handled. The Tsavo drive was spectacular — we had an entire waterhole to ourselves."</p>
+          <div class="testimonial-author">
+            <span class="testimonial-name">Priya K.</span>
+            <span class="testimonial-trip">Tsavo East · Private Safari</span>
+          </div>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"Kilimanjaro was the hardest thing I've ever done and the best. Our guide's acclimatisation advice was spot-on. Summit day was pure magic."</p>
+          <div class="testimonial-author">
+            <span class="testimonial-name">Daniel O.</span>
+            <span class="testimonial-trip">Kilimanjaro · Machame Route</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SAFETY TEASER ── -->
+  <section class="safety-teaser">
+    <div class="container">
+      <div class="safety-teaser-inner reveal">
+        <div>
+          <div class="safety-teaser-pills">
+            <span class="safety-pill">First Aid</span>
+            <span class="safety-pill">Radio Comms</span>
+            <span class="safety-pill">Cooler Box</span>
+            <span class="safety-pill">Packing Guide</span>
+          </div>
+          <h2>Travel with confidence.<br><em>We've got you covered.</em></h2>
+          <p>Every Wycliffe Travels vehicle is equipped for safety and comfort in the field — from first aid kits to radio communication. Find out exactly what to bring and what we provide.</p>
+          <div class="safety-teaser-items">
+            <div class="safety-item"><div class="safety-item-dot"></div><span>Vehicle first aid kits on every safari</span></div>
+            <div class="safety-item"><div class="safety-item-dot"></div><span>Radio comms for remote areas</span></div>
+            <div class="safety-item"><div class="safety-item-dot"></div><span>What to pack — straight from Wycliffe</span></div>
+          </div>
+        </div>
+        <a href="safety.html" class="safety-teaser-cta">View Full Guide →</a>
       </div>
     </div>
   </section>
@@ -912,35 +985,57 @@
 
         <div class="footer-col">
           <a href="/" class="logo" aria-label="Home">
-            <div class="logo-mark" aria-label="Logo"><img src="https://clay-tech-public-assets.s3.us-east-1.amazonaws.com/Wycliffe+Travels+Logo.png" alt="Logo"/></div>
+            <img height="100px" width="100px" src="/images/Wycliffe-Logo-100x100.png" alt="Logo"/>
             <span class="logo-text font-display">Wycliffe <em>Travels</em></span>
           </a>
-          <p class="footer-desc">A small, Kenyan-owned safari atelier crafting unhurried journeys<!-- since 2009-->. <!--Member, Ecotourism Kenya-->.</p>
+          <p class="footer-desc">A small, Kenyan-owned safari atelier crafting unhurried journeys through Kenya and Tanzania.</p>
+          <p class="footer-desc" style="margin-top:0.5rem"><a href="mailto:info@wycliffetravels.com">info@wycliffetravels.com</a></p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/wycliffetravels" target="_blank" rel="noopener" aria-label="Instagram">ig</a>
+            <a href="https://www.facebook.com/profile.php?id=61590709409956" target="_blank" rel="noopener" aria-label="Facebook">fb</a>
+            <a href="https://wa.me/254724704711" target="_blank" rel="noopener" aria-label="WhatsApp">wa</a>
+          </div>
         </div>
 
         <div class="footer-col">
-          <p class="eyebrow"><!--Visit--></p>
-          <p><!--Karen Road, Nairobi--></p>
-          <p><!--hello@jambosafaris.co.ke--></p>
-          <p><!--+254 700 000 000--></p>
+          <p class="eyebrow" style="margin-bottom:0.75rem">Explore</p>
+          <a href="#journeys">Signature Journeys</a>
+          <a href="#stories">Field Notes</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="safety.html">Preparation & Safety</a>
+          <a href="#about">About</a>
         </div>
 
         <div class="footer-col">
           <p class="eyebrow">Plan</p>
-          <a href="/bk/create.html">Book a journey →</a>
-          <a href="/bk/manage.html">Manage your booking →</a>
+          <a href="create.html">Book a journey →</a>
+          <a href="manage.html">Manage your booking →</a>
         </div>
 
       </div>
 
       <div class="footer-bottom">
-        <span>© 2026 Wycliff Travels</span>
+        <span>© 2026 Wycliffe Travels</span>
         <span>Karibu Kenya 🇰🇪</span>
       </div>
     </div>
   </footer>
 
 </main>
+
+<!-- ── WHATSAPP FLOATING BUTTON ── -->
+<a
+  href="https://wa.me/254724704711?text=Hi%20Wycliffe%2C%20I%27d%20like%20to%20enquire%20about%20a%20safari."
+  class="whatsapp-fab"
+  target="_blank"
+  rel="noopener"
+  aria-label="Chat on WhatsApp"
+>
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+  <span>Chat with Wycliffe</span>
+</a>
 
 <script>
   /* ─────────────────────────────────────────────────────────────────
@@ -1005,7 +1100,30 @@
   updateActiveLink();
 
   /* ─────────────────────────────────────────────────────────────────
-     4. SCROLL-REVEAL — fades in .reveal and .reveal-stagger elements
+     4. REEL PLAY/PAUSE TOGGLE
+  ───────────────────────────────────────────────────────────────── */
+  document.querySelectorAll('.reel-card').forEach(card => {
+    const video     = card.querySelector('.reel-video');
+    const inner     = card.querySelector('.reel-inner');
+    const playIcon  = card.querySelector('.play-icon');
+    const pauseIcon = card.querySelector('.pause-icon');
+    if (!video || !inner) return;
+
+    inner.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+        if (playIcon)  playIcon.style.display  = 'none';
+        if (pauseIcon) pauseIcon.style.display = 'inline';
+      } else {
+        video.pause();
+        if (playIcon)  playIcon.style.display  = 'inline';
+        if (pauseIcon) pauseIcon.style.display = 'none';
+      }
+    });
+  });
+
+  /* ─────────────────────────────────────────────────────────────────
+     5. SCROLL-REVEAL — fades in .reveal and .reveal-stagger elements
   ───────────────────────────────────────────────────────────────── */
   const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
 
