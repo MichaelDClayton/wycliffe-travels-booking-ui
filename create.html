@@ -10,16 +10,6 @@
 
     gtag('config', 'G-4HZP8G01WP');
   </script>
-  <a href="https://wa.me/1234567890" id="whatsapp-btn" target="_blank">Chat on WhatsApp</a>
-
-  <script>
-    document.getElementById('whatsapp-btn').addEventListener('click', function() {
-      gtag('event', 'whatsapp_click', {
-        event_category: 'engagement',
-        event_label: 'whatsapp_chat_button'
-      });
-    });
-  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Book Your Adventure — Wycliffe Travels Safari &amp; Tour</title>
@@ -355,7 +345,19 @@
     }
     .book-whatsapp:hover { background: #128C7E; color: #fff; }
     .book-whatsapp svg { width: 1rem; height: 1rem; fill: #fff; flex-shrink: 0; }
+
+    /* ── Enquiry mode: prices and payment hidden ───────────────── */
+    /* To bring online payment back later, delete this block and set ENQUIRY_MODE = false below. */
+    .cost-box, .cost-box.visible,
+    .payment-options, .payment-options.visible { display: none !important; }
+    .enquiry-alt {
+      margin-top: 0.9rem;
+      font-size: 0.8125rem;
+      color: var(--color-muted);
+    }
+    .enquiry-alt a { color: var(--color-clay); text-decoration: underline; text-underline-offset: 3px; }
   </style>
+</head>
 <body>
 
 <!-- ── Header ── -->
@@ -376,12 +378,12 @@
 
   <!-- Left: lede -->
   <div class="book-lede">
-    <p class="eyebrow"><span class="rule"></span>Reserve your tour</p>
+    <p class="eyebrow"><span class="rule"></span>Request your tour</p>
     <h1 class="book-headline">
       Choose your <em>adventure.</em>
     </h1>
     <p class="book-desc">
-      Select your experience and secure your slot instantly. Every journey is private and made-to-measure — a specialist is on hand if you need us.
+      Pick your experience, dates and group size, and we'll reply with a tailored quote — usually the same day. Every journey is private and made-to-measure.
     </p>
     <div class="book-contact">
       <a href="mailto:info@wycliffetravels.com">info@wycliffetravels.com</a>
@@ -485,7 +487,7 @@
         <!-- Pickup address -->
         <div class="form-group full">
           <label for="pickupAddress">Pickup Address</label>
-          <input type="text" id="pickupAddress" placeholder="e.g., 123 Main St, New York, NY" required minlength="5"/>
+          <input type="text" id="pickupAddress" placeholder="e.g., your hotel in Nairobi or Mombasa" required minlength="5"/>
         </div>
 
         <!-- Party size -->
@@ -496,13 +498,11 @@
 
         <!-- Policy -->
         <div class="policy-box">
-          <h4>Payment, Cancellation &amp; Refund Policy</h4>
+          <h4>How it works</h4>
           <p>
-            <strong>A non-refundable 30% deposit</strong> is required at the time of booking. <br/><br/>
-            <strong>If paid in-full:</strong><br/>
-            For cancellations made at least 24 hours before your scheduled tour, <strong>the remaining 70% will be fully refunded.</strong> <br/><br/>
-            <strong>Cancellations within 24 hours of departure are non-refundable.</strong><br/><br/>
-            For further inquiries, contact us at
+            Sending this form costs nothing and commits you to nothing. <br/><br/>
+            Your request opens in WhatsApp with your details filled in. Wycliffe will reply with availability and a quote tailored to your group, and you'll agree on payment and any deposit directly with him.<br/><br/>
+            Prefer email? Write to
             <a href="mailto:info@wycliffetravels.com">info@wycliffetravels.com</a>.
           </p>
         </div>
@@ -513,8 +513,9 @@
         <!-- Submit -->
         <div class="form-footer">
           <button type="submit" id="submitBtn" class="btn-submit" disabled>
-            Confirm your booking <span aria-hidden="true">→</span>
+            Request a quote on WhatsApp <span aria-hidden="true">→</span>
           </button>
+          <p class="enquiry-alt">No WhatsApp? <a href="mailto:info@wycliffetravels.com" id="emailEnquiry">Send the same request by email</a>.</p>
         </div>
 
       </div>
@@ -529,6 +530,15 @@
     API_BASE_URL: "https://wycliffetravels.com",
     CDN_DOMAIN:   "wycliffetravels.com"
   };
+
+  /* ── ENQUIRY MODE ─────────────────────────────────────────────
+     true  = no prices, no Stripe: the form sends a quote request to
+             Wycliffe on WhatsApp (or email). /submit is never called.
+     false = original behaviour (cost summary + Stripe checkout).
+             Also delete the "Enquiry mode" CSS block in <head>.     */
+  const ENQUIRY_MODE    = true;
+  const WHATSAPP_NUMBER = "254724704711";          // digits only, country code first
+  const ENQUIRY_EMAIL   = "info@wycliffetravels.com";
 
   /* ── APP (formerly app.js) ─────────────────────────────────── */
   const API_BASE_URL  = window.ENV.API_BASE_URL;
@@ -633,7 +643,7 @@
       document.getElementById('costBox').classList.remove('visible');
       document.getElementById('paymentOptions').classList.remove('visible');
       document.getElementById('depositRow').style.display = 'none';
-      submitBtn.textContent = 'Confirm your booking →';
+      submitBtn.textContent = ENQUIRY_MODE ? 'Request a quote on WhatsApp →' : 'Confirm your booking →';
       return;
     }
 
@@ -662,6 +672,9 @@
       highlightsEl.style.display = 'none';
     }
     document.getElementById('tourSummary').classList.add('visible');
+
+    // Enquiry mode: stop here, so no price, total or deposit is ever written to the page
+    if (ENQUIRY_MODE) return;
 
     // Cost breakdown
     document.getElementById('costPerPerson').textContent = `$${price.toLocaleString()}`;
@@ -712,6 +725,44 @@
     return diffDays >= 60;
   }
 
+  // ── Enquiry helpers ───────────────────────────────────────────
+  function buildEnquiryText() {
+    const selected = tourSelect.options[tourSelect.selectedIndex];
+    const tourName = selected && selected.value ? selected.textContent : '(not chosen yet)';
+    const date     = dateInput.value
+      ? new Date(dateInput.value + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+      : '(flexible)';
+    const val = id => document.getElementById(id).value.trim() || '-';
+    return [
+      "Hello Wycliffe, I'd like a quote for this tour:",
+      "",
+      `Tour: ${tourName}`,
+      `Date: ${date}`,
+      `Party size: ${val('partySize')}`,
+      `Pickup: ${val('pickupAddress')}`,
+      `Name: ${val('customerName')}`,
+      `Email: ${val('customerEmail')}`
+    ].join('\n');
+  }
+
+  // Track the WhatsApp button beside the headline (replaces the old placeholder tracker)
+  document.querySelectorAll('.book-whatsapp').forEach(btn => btn.addEventListener('click', () => {
+    if (typeof gtag === 'function') {
+      gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'whatsapp_chat_button' });
+    }
+  }));
+
+  // "Send by email" link: same request, pre-filled in the visitor's mail app
+  document.getElementById('emailEnquiry').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!document.getElementById('bookingForm').reportValidity()) return;
+    if (typeof gtag === 'function') {
+      gtag('event', 'email_click', { event_category: 'engagement', event_label: 'quote_request_form' });
+    }
+    const subject = encodeURIComponent('Tour quote request');
+    window.location.href = `mailto:${ENQUIRY_EMAIL}?subject=${subject}&body=${encodeURIComponent(buildEnquiryText())}`;
+  });
+
   // ── POST /submit ──────────────────────────────────────────────
   document.getElementById('bookingForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -732,6 +783,19 @@
     if (!date)                        { alert("Please select a booking date.");       return; }
     if (!partySize || partySize <= 0) { alert("Please provide a valid party size.");  return; }
     if (!pickupAddress)               { alert("Please provide a pick-up location.");  return; }
+
+    // Enquiry mode: hand the request to Wycliffe on WhatsApp instead of Stripe
+    if (ENQUIRY_MODE) {
+      if (typeof gtag === 'function') {
+        gtag('event', 'whatsapp_click', { event_category: 'engagement', event_label: 'quote_request_form' });
+      }
+      const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildEnquiryText())}`;
+      const win = window.open(waUrl, '_blank', 'noopener');
+      if (!win) window.location.href = waUrl;   // popup blocked → open in this tab
+      messageBox.textContent = "Your request is ready in WhatsApp — just press send. Wycliffe will reply with a quote.";
+      messageBox.className   = "info";
+      return;
+    }
 
     // Payload — unchanged from original app.js
     const bookingData = { tourId, date, name, email, partySize, pickupAddress, paymentType };
