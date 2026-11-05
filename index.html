@@ -10,16 +10,6 @@
 
     gtag('config', 'G-4HZP8G01WP');
   </script>
-  <a href="https://wa.me/1234567890" id="whatsapp-btn" target="_blank">Chat on WhatsApp</a>
-
-  <script>
-    document.getElementById('whatsapp-btn').addEventListener('click', function() {
-      gtag('event', 'whatsapp_click', {
-        event_category: 'engagement',
-        event_label: 'whatsapp_chat_button'
-      });
-    });
-  </script>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Wycliffe Travels — Authentic East African Safari &amp; Tour Experiences</title>
@@ -703,7 +693,6 @@
       <a href="gallery.html">Gallery</a>
       <a href="safety.html">Preparation & Safety</a>
       <a href="#about">About</a>
-      <a href="manage.html">Manage Booking</a>
       <a href="create.html" style="color:var(--color-gold)">Begin Your Safari →</a>
     </nav>
   </header>
@@ -733,8 +722,8 @@
           Private safaris and tours through Kenya and Tanzania — the Maasai Mara, Nairobi National Park, Funzi Island, Kilimanjaro and Zanzibar — guided by East Africans who know every track, every silhouette, every silence worth keeping.
         </p>
         <div class="hero-ctas">
-          <a href="create.html" class="btn-primary">Book a Journey <span aria-hidden="true">→</span></a>
-          <a href="manage.html" class="btn-outline">Manage Booking</a>
+          <a href="create.html" class="btn-primary">Request a Quote <span aria-hidden="true">→</span></a>
+          <a href="https://wa.me/254724704711?text=Hi%20Wycliffe%2C%20I%27d%20like%20to%20enquire%20about%20a%20safari." class="btn-outline wa-track" target="_blank" rel="noopener">Chat on WhatsApp</a>
         </div>
       </div>
 
@@ -766,7 +755,7 @@
 
         <!-- Feature article -->
         <article class="article-feature reveal">
-          <a href="create.html?tour=maasai-mara" class="img-wrap" aria-label="Book the Maasai Mara journey">
+          <a href="create.html?tour=maasai-mara" class="img-wrap" aria-label="Plan the Maasai Mara journey">
             <img
                     src="/images/lion.jpg"
                     alt="Portrait of a male lion in golden Mara grass"
@@ -777,7 +766,7 @@
           <p class="eyebrow" style="margin-top:1.5rem;">Feature · Maasai Mara</p>
           <h3><a href="create.html?tour=maasai-mara" class="feature-headline-link">The lion who learned the sound of our Land Cruiser.</a></h3>
           <p class="desc">Four mornings, one coalition of brothers, and a guide who has tracked them since they were cubs. A dispatch from the Mara Triangle in the long rains.</p>
-          <a href="create.html?tour=maasai-mara" class="story-read-link">Book the Maasai Mara →</a>
+          <a href="create.html?tour=maasai-mara" class="story-read-link">Plan a Maasai Mara trip →</a>
         </article>
 
         <!-- Aside: reels + quote -->
@@ -875,7 +864,7 @@
           <div class="journey-num"><span>01</span></div>
           <div class="journey-name font-display">Mount Kilimanjaro Climbing</div>
           <div class="journey-nights">6 nights · Tanzania</div>
-          <div class="journey-price">from $1,990</div>
+          <div class="journey-price">Enquire for rates</div>
           <div class="journey-arrow">→</div>
           <p class="journey-desc">Summit Africa's highest peak on a guided 6-night ascent. Routes via Machame or Lemosho, with acclimatisation camps and certified mountain guides throughout.</p>
         </a>
@@ -884,7 +873,7 @@
           <div class="journey-num"><span>02</span></div>
           <div class="journey-name font-display">Tanzania Special</div>
           <div class="journey-nights">6 nights</div>
-          <div class="journey-price">from $3,200</div>
+          <div class="journey-price">Enquire for rates</div>
           <div class="journey-arrow">→</div>
           <p class="journey-desc">Lake Manyara, Tarangire, Serengeti, Ngorongoro Crater, Arusha.</p>
         </a>
@@ -893,7 +882,7 @@
           <div class="journey-num"><span>03</span></div>
           <div class="journey-name font-display">Maasai Mara</div>
           <div class="journey-nights">2 nights</div>
-          <div class="journey-price">from $3,000</div>
+          <div class="journey-price">Enquire for rates</div>
           <div class="journey-arrow">→</div>
           <p class="journey-desc">Private game drives in one of the world's great wildlife reserves. Big Five encounters, Maasai culture, and the Great Migration (July–October).</p>
         </a>
@@ -902,7 +891,7 @@
           <div class="journey-num"><span>04</span></div>
           <div class="journey-name font-display">Tsavo East</div>
           <div class="journey-nights">1 night</div>
-          <div class="journey-price">from $400</div>
+          <div class="journey-price">Enquire for rates</div>
           <div class="journey-arrow">→</div>
           <p class="journey-desc">Kenya's largest national park — red elephants, dramatic lava flows, and the famous man-eating lion country. An ideal first safari from Nairobi.</p>
         </a>
@@ -1008,8 +997,8 @@
 
         <div class="footer-col">
           <p class="eyebrow">Plan</p>
-          <a href="create.html">Book a journey →</a>
-          <a href="manage.html">Manage your booking →</a>
+          <a href="create.html">Request a quote →</a>
+          <a href="https://wa.me/254724704711" class="wa-track" target="_blank" rel="noopener">Chat on WhatsApp →</a>
         </div>
 
       </div>
@@ -1026,7 +1015,7 @@
 <!-- ── WHATSAPP FLOATING BUTTON ── -->
 <a
   href="https://wa.me/254724704711?text=Hi%20Wycliffe%2C%20I%27d%20like%20to%20enquire%20about%20a%20safari."
-  class="whatsapp-fab"
+  class="whatsapp-fab wa-track"
   target="_blank"
   rel="noopener"
   aria-label="Chat on WhatsApp"
@@ -1123,7 +1112,21 @@
   });
 
   /* ─────────────────────────────────────────────────────────────────
-     5. SCROLL-REVEAL — fades in .reveal and .reveal-stagger elements
+     5. WHATSAPP CLICK TRACKING (Google Analytics)
+  ───────────────────────────────────────────────────────────────── */
+  document.querySelectorAll('.wa-track, .footer-social a[aria-label="WhatsApp"]').forEach(link => {
+    link.addEventListener('click', () => {
+      if (typeof gtag === 'function') {
+        gtag('event', 'whatsapp_click', {
+          event_category: 'engagement',
+          event_label: link.classList.contains('whatsapp-fab') ? 'whatsapp_float_button' : 'whatsapp_link'
+        });
+      }
+    });
+  });
+
+  /* ─────────────────────────────────────────────────────────────────
+     6. SCROLL-REVEAL — fades in .reveal and .reveal-stagger elements
   ───────────────────────────────────────────────────────────────── */
   const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
 
