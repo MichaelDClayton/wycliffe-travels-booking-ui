@@ -423,25 +423,60 @@
 <script>
   /* ── Config ──────────────────────────────────────────────────────────── */
   // Match the CloudFront domain you set in GalleryMediaProcessor.java
-  const GALLERY_MANIFEST = 'https://d3he7xhdu9g98o.cloudfront.net/gallery/gallery.json';
+  const CDN = 'https://d3he7xhdu9g98o.cloudfront.net';
+  const GALLERY_MANIFEST = CDN + '/gallery/gallery.json';   // videos (GalleryMediaProcessor)
+  const PHOTO_MANIFEST   = CDN + '/gallery/photos.json';    // photos (portal-photos.html)
+
+  // gallery.html?tour=<eventTypeId> shows only the photos attached to that tour
+  const TOUR_FILTER = new URLSearchParams(location.search).get('tour');
 
   /* ── State ───────────────────────────────────────────────────────────── */
   let allItems    = [];
   let filtered    = [];
   let currentIdx  = 0;
 
-  /* ── Load manifest ───────────────────────────────────────────────────── */
+  /* ── Load manifests ──────────────────────────────────────────────────── */
+  async function fetchJson(url) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  }
+
   async function loadGallery() {
-    try {
-      const res  = await fetch(GALLERY_MANIFEST);
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      const data = await res.json();
-      allItems   = data.items || [];
-      applyFilter('all');
-    } catch (err) {
+    const [media, photos] = await Promise.allSettled([fetchJson(GALLERY_MANIFEST), fetchJson(PHOTO_MANIFEST)]);
+    if (media.status === 'rejected' && photos.status === 'rejected') {
       document.getElementById('galleryGrid').innerHTML =
         '<div class="state-msg">Unable to load gallery. Please try again later.</div>';
+      return;
     }
+
+    const photoData = photos.status === 'fulfilled' ? photos.value : {};
+    let photoItems = (photoData.photos || [])
+      .slice()
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map(p => ({
+        type: 'image',
+        src: `${CDN}/${p.fullKey}`,
+        thumb: `${CDN}/${p.thumbKey}`,
+        caption: p.title || '',
+        tourIds: p.tourIds || []
+      }));
+    const mediaItems = media.status === 'fulfilled' ? (media.value.items || []) : [];
+
+    if (TOUR_FILTER) {
+      // Tour view: only that tour's photos
+      allItems = photoItems.filter(p => p.tourIds.includes(TOUR_FILTER));
+      const tour = (photoData.tours || []).find(t => t.tourId === TOUR_FILTER);
+      if (tour) {
+        const desc = document.querySelector('.page-header .desc');
+        if (desc) desc.textContent = `Photos from ${tour.name}.`;
+        document.title = `${tour.name} — Gallery | Wycliffe Travels`;
+      }
+      document.querySelector('.filter-bar').style.display = 'none';
+    } else {
+      allItems = [...photoItems, ...mediaItems];
+    }
+    applyFilter('all');
   }
 
   /* ── Filter ──────────────────────────────────────────────────────────── */
@@ -471,7 +506,7 @@
     grid.innerHTML = filtered.map((item, idx) => {
       if (item.type === 'image') {
         return `<div class="gallery-card" data-idx="${idx}" role="button" tabindex="0" aria-label="Open photo">
-          <img src="${item.src}" alt="${escHtml(item.caption || '')}" loading="lazy"/>
+          <img src="${item.thumb || item.src}" alt="${escHtml(item.caption || '')}" loading="lazy"/>
         </div>`;
       } else {
         return `<div class="gallery-card" data-idx="${idx}" role="button" tabindex="0" aria-label="Play video">

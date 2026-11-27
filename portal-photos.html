@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Photos — Wycliffe Travels Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <script src="config.js"></script>
+  <style>
+    /* Same tokens as portal.html */
+    :root {
+      --bg:#0c0d0f; --surface:#13151a; --surface2:#1c1f27; --border:#2a2d38;
+      --gold:#c9a96e; --gold-dim:#8a6e42; --text:#e8e4dc; --text-muted:#7a7872;
+      --red:#c0392b; --green:#2ecc71; --radius:4px;
+      --font-serif:'Cormorant Garamond', Georgia, serif; --font-mono:'DM Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html, body { min-height:100%; background:var(--bg); color:var(--text); font-family:var(--font-mono); font-size:13px; }
+    button { cursor:pointer; font-family:var(--font-mono); }
+    input, textarea, select { font-family:var(--font-mono); font-size:13px; }
+
+    /* Header (matches portal.html) */
+    .header { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:0 40px; height:60px; border-bottom:1px solid var(--border); background:var(--surface); position:sticky; top:0; z-index:10; }
+    .header-brand { display:flex; align-items:center; gap:10px; font-family:var(--font-serif); font-size:13px; letter-spacing:.3em; text-transform:uppercase; color:var(--gold); }
+    .header-brand img { height:36px; width:36px; object-fit:contain; }
+    .header-nav { display:flex; gap:4px; }
+    .header-nav a { color:var(--text-muted); text-decoration:none; font-size:10px; letter-spacing:.15em; text-transform:uppercase; padding:7px 12px; border:1px solid transparent; }
+    .header-nav a:hover { color:var(--text); }
+    .header-nav a.active { color:var(--gold); border-color:var(--border); }
+    .header-right { display:flex; align-items:center; gap:20px; }
+    .header-user { color:var(--text-muted); font-size:11px; letter-spacing:.05em; }
+    .btn-ghost { padding:7px 16px; background:transparent; border:1px solid var(--border); color:var(--text-muted); font-size:10px; letter-spacing:.15em; text-transform:uppercase; transition:border-color .2s, color .2s; white-space:nowrap; }
+    .btn-ghost:hover { border-color:var(--gold-dim); color:var(--text); }
+    .btn-ghost:disabled { opacity:.4; cursor:default; }
+    .btn-gold { padding:9px 18px; background:var(--gold); color:var(--bg); border:none; font-size:10px; letter-spacing:.2em; text-transform:uppercase; white-space:nowrap; }
+    .btn-gold:hover { background:#d4b87a; }
+    .btn-gold:disabled { opacity:.5; cursor:default; }
+    .btn-danger { padding:7px 16px; background:transparent; border:1px solid rgba(192,57,43,.5); color:#e07060; font-size:10px; letter-spacing:.15em; text-transform:uppercase; white-space:nowrap; }
+    .btn-danger:hover { background:rgba(192,57,43,.15); }
+
+    .main { padding:40px; max-width:1200px; margin:0 auto; }
+    .page-header { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:28px; padding-bottom:20px; border-bottom:1px solid var(--border); }
+    .page-title { font-family:var(--font-serif); font-size:36px; font-weight:300; }
+    .page-title span { color:var(--gold); font-style:italic; }
+    .page-subtitle { color:var(--text-muted); font-size:11px; letter-spacing:.05em; margin-top:6px; }
+    .page-actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    #status { font-size:11px; letter-spacing:.05em; color:var(--text-muted); }
+    #status.dirty { color:var(--gold); } #status.ok { color:var(--green); } #status.err { color:#e07060; }
+
+    /* Tour filter */
+    .tours { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+    .chip { background:transparent; border:1px solid var(--border); color:var(--text-muted); padding:6px 12px; font-size:11px; letter-spacing:.04em; }
+    .chip:hover { color:var(--text); border-color:var(--gold-dim); }
+    .chip.active { color:var(--bg); background:var(--gold); border-color:var(--gold); }
+    .chip .n { opacity:.7; margin-left:6px; }
+
+    .toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+    .upload-label { display:inline-block; cursor:pointer; }
+    .selbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:10px 12px; margin-bottom:16px; border:1px solid var(--gold-dim); background:rgba(201,169,110,.06); }
+    .selbar[hidden] { display:none; }
+    .selbar strong { color:var(--gold); font-weight:400; font-size:11px; letter-spacing:.1em; text-transform:uppercase; margin-right:4px; }
+    select { background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:7px 10px; }
+
+    /* Grid */
+    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:14px; }
+    .tile { position:relative; min-width:0; background:var(--surface); border:1px solid var(--border); cursor:pointer; transition:border-color .2s; }
+    .tile:hover { border-color:var(--gold-dim); }
+    .tile.sel { border-color:var(--gold); box-shadow:0 0 0 1px var(--gold); }
+    .tile .img { aspect-ratio:4/3; background:var(--surface2); display:flex; align-items:center; justify-content:center; color:var(--text-muted); font-size:11px; overflow:hidden; }
+    .tile img { width:100%; height:100%; object-fit:cover; display:block; }
+    .tile .meta { padding:10px 12px; }
+    .tile .title { font-family:var(--font-serif); font-size:17px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .tile .title.none { color:var(--text-muted); font-style:italic; }
+    .tile .tags { font-size:10px; color:var(--text-muted); letter-spacing:.03em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+    .tile .pick { position:absolute; top:8px; left:8px; width:20px; height:20px; accent-color:var(--gold); cursor:pointer; }
+    .empty { grid-column:1/-1; padding:60px 16px; text-align:center; color:var(--text-muted); border:1px dashed var(--border); }
+
+    /* Signed-out / loading */
+    .notice { max-width:440px; margin:80px auto; padding:44px; text-align:center; background:var(--surface); border:1px solid var(--border); }
+    .notice h2 { font-family:var(--font-serif); font-weight:300; font-size:28px; margin-bottom:12px; }
+    .notice p { color:var(--text-muted); margin-bottom:24px; line-height:1.6; }
+    .notice a { color:var(--bg); text-decoration:none; }
+
+    /* Edit dialog */
+    dialog { margin:auto; border:1px solid var(--border); background:var(--surface); color:var(--text); padding:0; width:min(760px, calc(100vw - 32px)); max-height:calc(100vh - 32px); }
+    dialog::backdrop { background:rgba(0,0,0,.7); }
+    .dlg { padding:20px; }
+    .dlg-img { width:100%; max-height:48vh; object-fit:contain; background:#000; display:block; }
+    .field { margin-top:16px; }
+    .field label, .field .lbl { display:block; font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+    .field .opt { text-transform:none; letter-spacing:0; opacity:.7; }
+    .field input[type=text], .field textarea { width:100%; padding:11px 13px; background:var(--surface2); border:1px solid var(--border); color:var(--text); outline:none; }
+    .field input[type=text]:focus, .field textarea:focus { border-color:var(--gold-dim); }
+    .field textarea { min-height:70px; resize:vertical; }
+    .checks { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:6px 16px; max-height:190px; overflow:auto; padding:10px 12px; background:var(--surface2); border:1px solid var(--border); }
+    .checks label { display:flex; gap:8px; align-items:center; cursor:pointer; text-transform:none; letter-spacing:0; color:var(--text); font-size:12px; margin:0; }
+    .checks input { accent-color:var(--gold); }
+    .removed { color:var(--text-muted); font-style:italic; }
+    .dlg-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; align-items:center; }
+    .spacer { flex:1; }
+
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); opacity:0; background:var(--surface2); border:1px solid var(--border); padding:12px 18px; font-size:12px; transition:all .25s; z-index:50; pointer-events:none; }
+    .toast.visible { opacity:1; transform:translateX(-50%) translateY(0); }
+    .toast.error { border-color:rgba(192,57,43,.6); color:#e07060; }
+
+    @media (max-width:720px) {
+      .header { padding:0 16px; }
+      .header-brand span, .header-user { display:none; }
+      .main { padding:24px 16px; }
+      .page-title { font-size:28px; }
+      .grid { grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-brand">
+    <img src="https://d3he7xhdu9g98o.cloudfront.net/images/Wycliffe-Logo-100x100.png" alt="Wycliffe Travels" />
+    <span>Wycliffe Travels</span>
+  </div>
+  <nav class="header-nav">
+    <a href="portal.html">Tours</a>
+    <a href="portal-photos.html" class="active">Photos</a>
+  </nav>
+  <div class="header-right">
+    <span class="header-user" id="header-email"></span>
+    <button class="btn-ghost" id="btn-logout" hidden>Sign Out</button>
+  </div>
+</header>
+
+<!-- Shown when there is no valid portal sign-in -->
+<div class="notice" id="signed-out" hidden>
+  <h2>Sign in to manage photos</h2>
+  <p>Photos use the same sign-in as the Tours portal. Sign in there, then come back to Photos.</p>
+  <a class="btn-gold" href="portal.html">Go to portal sign-in</a>
+</div>
+
+<main class="main" id="app" hidden>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Tour <span>Photos</span></h1>
+      <p class="page-subtitle" id="photo-count">Loading…</p>
+    </div>
+    <div class="page-actions">
+      <span id="status"></span>
+      <button class="btn-gold" id="save">Save changes</button>
+    </div>
+  </div>
+
+  <div class="tours" id="tourChips"></div>
+
+  <div class="toolbar">
+    <label class="btn-ghost upload-label" id="addLabel"><span id="addText">+ Add photos</span>
+      <input id="files" type="file" accept="image/jpeg,image/png" multiple hidden>
+    </label>
+    <button class="btn-ghost" id="selectAll">Select all</button>
+  </div>
+
+  <div class="selbar" id="selbar" hidden>
+    <strong id="selCount"></strong>
+    <select id="attachTo" aria-label="Attach selected photos to a tour"></select>
+    <button class="btn-ghost" id="attachBtn">Attach</button>
+    <button class="btn-ghost" id="detachBtn" hidden>Remove from this tour</button>
+    <button class="btn-danger" id="deleteSel">Delete</button>
+    <button class="btn-ghost" id="clearSel">Clear</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</main>
+
+<!-- Edit one photo -->
+<dialog id="editDlg">
+  <form method="dialog" class="dlg" id="editForm">
+    <img class="dlg-img" id="editImg" alt="">
+    <div class="field">
+      <label for="editTitle">Title <span class="opt">(optional)</span></label>
+      <input id="editTitle" type="text" maxlength="120" placeholder="Untitled">
+    </div>
+    <div class="field">
+      <label for="editDesc">Description <span class="opt">(optional)</span></label>
+      <textarea id="editDesc" maxlength="1000"></textarea>
+    </div>
+    <div class="field">
+      <span class="lbl">Attached to tours</span>
+      <div class="checks" id="editTours"></div>
+    </div>
+    <div class="dlg-actions">
+      <button value="save" class="btn-gold">Done</button>
+      <button value="cancel" class="btn-ghost" formnovalidate>Cancel</button>
+      <span class="spacer"></span>
+      <button type="button" class="btn-ghost" id="moveEarlier">← Earlier</button>
+      <button type="button" class="btn-ghost" id="moveLater">Later →</button>
+      <button type="button" class="btn-danger" id="editDelete">Delete photo</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────
+const CONFIG = {
+  // Same API as portal.html; the gallery routes live under /portal/gallery
+  apiBase:     'https://fglerw59ak.execute-api.us-east-1.amazonaws.com/sandbox/portal',
+  // Public tour list (same one create.html uses)
+  toursUrl:    (window.ENV && window.ENV.API_BASE_URL ? window.ENV.API_BASE_URL : 'https://wycliffetravels.com') + '/tours',
+  cdn:         'https://d3he7xhdu9g98o.cloudfront.net',
+  manifestKey: 'gallery/photos.json',
+  photoPrefix: 'gallery/photos/'
+};
+
+const ALL = '__all__', NONE = '__none__';
+const state = {
+  tours: [],          // [{tourId, name, removed?}] tourId = eventTypeId
+  photos: [],         // [{photoId, title, description, tourIds, sortOrder, thumbKey, fullKey, uploadedAt}]
+  filter: ALL,
+  selected: new Set(),
+  dirty: false,
+  editing: null
+};
+
+const $ = id => document.getElementById(id);
+const el = (tag, props = {}, ...kids) => { const n = Object.assign(document.createElement(tag), props); n.append(...kids); return n; };
+
+// ── AUTH (shares portal.html's sign-in) ───────────────────────
+function tokenPayload(t) {
+  try { return JSON.parse(atob(t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))); } catch { return null; }
+}
+function getToken() {
+  const t = sessionStorage.getItem('wt_id_token');
+  const p = t && tokenPayload(t);
+  if (!p || !p.exp || p.exp * 1000 < Date.now() + 30000) return null;   // missing or about to expire
+  return t;
+}
+function signedOut() {
+  $('app').hidden = true; $('btn-logout').hidden = true; $('header-email').textContent = '';
+  $('signed-out').hidden = false;
+}
+$('btn-logout').onclick = () => {
+  if (state.dirty && !confirm('You have unsaved changes. Sign out anyway?')) return;
+  sessionStorage.removeItem('wt_id_token');
+  sessionStorage.removeItem('wt_access_token');
+  location.href = 'portal.html';
+};
+
+// ── API ───────────────────────────────────────────────────────
+async function api(method, path, body) {
+  const token = getToken();
+  if (!token) { signedOut(); throw new Error('Your session expired. Sign in again on the portal.'); }
+  const res = await fetch(CONFIG.apiBase + path, {
+    method,
+    headers: { 'Content-Type': 'application/json', 'Authorization': token },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401) { signedOut(); throw new Error('Your session expired. Sign in again on the portal.'); }
+  if (res.status === 403) throw new Error(data.error || 'This account is not allowed to manage photos.');
+  if (!res.ok) throw new Error(data.error || data.message || `Request failed (${res.status})`);
+  return data;
+}
+
+async function loadManifest() {
+  const res = await fetch(`${CONFIG.cdn}/${CONFIG.manifestKey}?t=${Date.now()}`, { cache: 'no-store' });
+  if (res.status === 403 || res.status === 404) return { tours: [], photos: [] };   // nothing saved yet
+  if (!res.ok) throw new Error('Could not load the photo list');
+  const data = await res.json();
+  return {
+    tours: data.tours || [],
+    photos: (data.photos || [])
+      .map(p => ({ ...p, title: p.title || '', description: p.description || '', tourIds: p.tourIds || [] }))
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+  };
+}
+
+async function loadTours() {
+  const res = await fetch(CONFIG.toursUrl, { headers: { Accept: 'application/json' } });
+  if (!res.ok) throw new Error('Could not load tours');
+  const list = await res.json();
+  return list
+    .filter(t => t.eventTypeId && t.tourName)
+    .map(t => ({ tourId: String(t.eventTypeId), name: t.tourName }));
+}
+
+/** Live tours first; keep tours that were deleted but still have photos, marked as removed. */
+function mergeTours(live, saved, photos) {
+  const ids = new Set(live.map(t => t.tourId));
+  const used = new Set(photos.flatMap(p => p.tourIds));
+  const leftovers = saved.filter(t => !ids.has(t.tourId) && used.has(t.tourId)).map(t => ({ ...t, removed: true }));
+  return [...live, ...leftovers];
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, isError = false) {
+  const t = $('toast');
+  t.textContent = msg; t.className = 'toast visible' + (isError ? ' error' : '');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.className = 'toast', 3500);
+}
+function setStatus(text, cls = '') { const s = $('status'); s.textContent = text; s.className = cls; }
+function markDirty() { state.dirty = true; setStatus('Unsaved changes', 'dirty'); }
+function tourName(id) { const t = state.tours.find(t => t.tourId === id); return t ? t.name : id; }
+function photo(id) { return state.photos.find(p => p.photoId === id); }
+function url(key) { return `${CONFIG.cdn}/${key}`; }
+function onTour() { return state.filter !== ALL && state.filter !== NONE; }
+
+function visiblePhotos() {
+  if (state.filter === ALL) return state.photos;
+  if (state.filter === NONE) return state.photos.filter(p => !p.tourIds.length);
+  return state.photos.filter(p => p.tourIds.includes(state.filter));
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function render() { renderChips(); renderGrid(); renderSelbar(); }
+
+function renderChips() {
+  const n = state.photos.length;
+  $('photo-count').textContent = `${n} photo${n === 1 ? '' : 's'} · ${state.tours.filter(t => !t.removed).length} tours`;
+  const chips = [
+    [ALL, 'All photos', n],
+    ...state.tours.map(t => [t.tourId, t.name + (t.removed ? ' (removed)' : ''), state.photos.filter(p => p.tourIds.includes(t.tourId)).length]),
+    [NONE, 'Not attached', state.photos.filter(p => !p.tourIds.length).length]
+  ];
+  $('tourChips').replaceChildren(...chips.map(([id, label, count]) => {
+    const b = el('button', { className: 'chip' + (state.filter === id ? ' active' : ''), type: 'button' },
+      label, el('span', { className: 'n', textContent: count }));
+    b.onclick = () => { state.filter = id; state.selected.clear(); render(); };
+    return b;
+  }));
+  $('addText').textContent = onTour() ? `+ Add photos to ${tourName(state.filter)}` : '+ Add photos';
+}
+
+function renderGrid() {
+  const list = visiblePhotos();
+  if (!list.length) {
+    const msg = state.filter === ALL ? 'No photos yet. Use “+ Add photos” to upload.'
+              : state.filter === NONE ? 'Every photo is attached to at least one tour.'
+              : 'No photos on this tour yet. Upload new ones here, or select photos under “All photos” and attach them.';
+    $('grid').replaceChildren(el('div', { className: 'empty', textContent: msg }));
+    return;
+  }
+  $('grid').replaceChildren(...list.map(p => {
+    const sel = state.selected.has(p.photoId);
+    const pick = el('input', { type: 'checkbox', className: 'pick', checked: sel });
+    pick.setAttribute('aria-label', 'Select ' + (p.title || 'untitled photo'));
+    pick.onclick = e => { e.stopPropagation(); toggle(p.photoId); };
+    const box = el('div', { className: 'img' }, thumb(p));
+    const meta = el('div', { className: 'meta' },
+      el('div', { className: 'title' + (p.title ? '' : ' none'), textContent: p.title || 'Untitled' }),
+      el('div', { className: 'tags', textContent: p.tourIds.length ? p.tourIds.map(tourName).join(', ') : 'Not attached' }));
+    const tile = el('div', { className: 'tile' + (sel ? ' sel' : '') }, box, pick, meta);
+    tile.onclick = () => state.selected.size ? toggle(p.photoId) : openEdit(p.photoId);
+    return tile;
+  }));
+}
+
+function thumb(p) {
+  const img = el('img', { alt: p.title || '', loading: 'lazy', src: url(p.thumbKey) });
+  img.onerror = () => {
+    // Usually still being resized right after upload; retry a few times
+    const tries = (img.dataset.tries = (+img.dataset.tries || 0) + 1);
+    if (tries <= 5) { setTimeout(() => { img.src = url(p.thumbKey) + '?t=' + Date.now(); }, 3000); return; }
+    img.replaceWith(document.createTextNode('Processing…'));
+  };
+  return img;
+}
+
+function renderSelbar() {
+  const n = state.selected.size;
+  $('selbar').hidden = n === 0;
+  $('selectAll').textContent = n && n === visiblePhotos().length ? 'Select none' : 'Select all';
+  if (!n) return;
+  $('selCount').textContent = `${n} selected`;
+  $('detachBtn').hidden = !onTour();
+  if (onTour()) $('detachBtn').textContent = `Remove from ${tourName(state.filter)}`;
+  const live = state.tours.filter(t => !t.removed);
+  $('attachTo').replaceChildren(el('option', { value: '', textContent: 'Attach to tour…' }),
+    ...live.map(t => el('option', { value: t.tourId, textContent: t.name })));
+  $('attachBtn').disabled = !live.length;
+}
+
+function toggle(id) {
+  state.selected.has(id) ? state.selected.delete(id) : state.selected.add(id);
+  renderGrid(); renderSelbar();
+}
+
+// ── SELECTION ACTIONS ─────────────────────────────────────────
+$('selectAll').onclick = () => {
+  const vis = visiblePhotos();
+  if (state.selected.size === vis.length) state.selected.clear();
+  else vis.forEach(p => state.selected.add(p.photoId));
+  renderGrid(); renderSelbar();
+};
+$('clearSel').onclick = () => { state.selected.clear(); renderGrid(); renderSelbar(); };
+
+$('attachBtn').onclick = () => {
+  const tid = $('attachTo').value;
+  if (!tid) { $('attachTo').focus(); return; }
+  const n = state.selected.size;
+  state.selected.forEach(id => { const p = photo(id); if (!p.tourIds.includes(tid)) p.tourIds.push(tid); });
+  state.selected.clear(); render(); markDirty();
+  toast(`Attached ${n} photo${n === 1 ? '' : 's'} to ${tourName(tid)}`);
+};
+
+$('detachBtn').onclick = () => {
+  const tid = state.filter;
+  state.selected.forEach(id => { const p = photo(id); p.tourIds = p.tourIds.filter(t => t !== tid); });
+  state.selected.clear(); render(); markDirty();
+};
+
+$('deleteSel').onclick = () => {
+  const n = state.selected.size;
+  if (!confirm(`Delete ${n} photo${n === 1 ? '' : 's'} from every tour? They're removed for good when you save.`)) return;
+  state.photos = state.photos.filter(p => !state.selected.has(p.photoId));
+  state.selected.clear(); render(); markDirty();
+};
+
+// ── EDIT ONE PHOTO ────────────────────────────────────────────
+function openEdit(id) {
+  const p = photo(id);
+  state.editing = id;
+  $('editImg').src = url(p.fullKey);
+  $('editImg').alt = p.title || '';
+  $('editTitle').value = p.title;
+  $('editDesc').value = p.description;
+  $('editTours').replaceChildren(...(state.tours.length
+    ? state.tours.filter(t => !t.removed || p.tourIds.includes(t.tourId)).map(t => el('label', {},
+        el('input', { type: 'checkbox', value: t.tourId, checked: p.tourIds.includes(t.tourId) }),
+        el('span', { className: t.removed ? 'removed' : '', textContent: t.name + (t.removed ? ' (removed)' : '') })))
+    : [el('span', { className: 'removed', textContent: 'No tours yet. Add tours on the Tours page.' })]));
+  updateMoveButtons();
+  $('editDlg').showModal();
+}
+
+function updateMoveButtons() {
+  const i = state.photos.findIndex(p => p.photoId === state.editing);
+  $('moveEarlier').disabled = i <= 0;
+  $('moveLater').disabled = i < 0 || i >= state.photos.length - 1;
+}
+function move(delta) {
+  const i = state.photos.findIndex(p => p.photoId === state.editing), j = i + delta;
+  if (i < 0 || j < 0 || j >= state.photos.length) return;
+  [state.photos[i], state.photos[j]] = [state.photos[j], state.photos[i]];
+  updateMoveButtons(); renderGrid(); markDirty();
+}
+$('moveEarlier').onclick = () => move(-1);
+$('moveLater').onclick = () => move(1);
+
+$('editDlg').addEventListener('close', () => {
+  const p = photo(state.editing);
+  if (p && $('editDlg').returnValue === 'save') {
+    const title = $('editTitle').value.trim();
+    const description = $('editDesc').value.trim();
+    const tourIds = [...$('editTours').querySelectorAll('input:checked')].map(c => c.value);
+    if (title !== p.title || description !== p.description || tourIds.join() !== p.tourIds.join()) {
+      Object.assign(p, { title, description, tourIds });
+      markDirty();
+    }
+  }
+  state.editing = null;
+  render();
+});
+
+$('editDelete').onclick = () => {
+  if (!confirm("Delete this photo from every tour? It's removed for good when you save.")) return;
+  state.photos = state.photos.filter(p => p.photoId !== state.editing);
+  state.selected.delete(state.editing);
+  $('editDlg').close('deleted');
+  markDirty();
+};
+
+// ── UPLOAD ────────────────────────────────────────────────────
+$('files').addEventListener('change', async e => {
+  const files = [...e.target.files];
+  e.target.value = '';
+  const attach = onTour() ? [state.filter] : [];
+  let done = 0;
+  for (const file of files) {
+    setStatus(`Uploading ${done + 1} of ${files.length}…`);
+    try {
+      const { photoId, uploadUrl } = await api('POST', '/gallery/upload-url', { contentType: file.type, size: file.size });
+      const put = await fetch(uploadUrl, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file });
+      if (!put.ok) throw new Error(`Upload failed (${put.status})`);
+      state.photos.push({
+        photoId, title: '', description: '', tourIds: [...attach], sortOrder: state.photos.length,
+        thumbKey: `${CONFIG.photoPrefix}${photoId}/thumb.jpg`,
+        fullKey:  `${CONFIG.photoPrefix}${photoId}/full.jpg`,
+        uploadedAt: new Date().toISOString()
+      });
+      done++;
+    } catch (err) {
+      render();
+      if (done) markDirty();
+      setStatus(`${file.name}: ${err.message}`, 'err');
+      if (done) toast(`${done} uploaded — press Save changes to keep them`);
+      return;
+    }
+  }
+  render(); markDirty();
+  toast(`${done} uploaded${attach.length ? ` to ${tourName(attach[0])}` : ''}. Press Save changes to keep them.`);
+});
+
+// ── SAVE ──────────────────────────────────────────────────────
+$('save').addEventListener('click', async () => {
+  $('save').disabled = true;
+  setStatus('Saving…');
+  try {
+    state.photos.forEach((p, i) => p.sortOrder = i);
+    // Store tour names with the photos so the public gallery can show them
+    const used = new Set(state.photos.flatMap(p => p.tourIds));
+    const tours = state.tours.filter(t => !t.removed || used.has(t.tourId)).map(t => ({ tourId: t.tourId, name: t.name }));
+    const r = await api('PUT', '/gallery', { tours, photos: state.photos });
+    state.dirty = false;
+    setStatus(`Saved ${r.saved} photo${r.saved === 1 ? '' : 's'}${r.deletedPhotos ? `, deleted ${r.deletedPhotos}` : ''}`, 'ok');
+  } catch (err) {
+    setStatus(err.message, 'err');
+  } finally {
+    $('save').disabled = false;
+  }
+});
+
+window.addEventListener('beforeunload', e => { if (state.dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+// ── START ─────────────────────────────────────────────────────
+async function start() {
+  const token = getToken();
+  if (!token) { signedOut(); return; }
+  const p = tokenPayload(token);
+  $('header-email').textContent = p.email || p['cognito:username'] || '';
+  $('btn-logout').hidden = false;
+  $('app').hidden = false;
+  try {
+    const [saved, live] = await Promise.all([loadManifest(), loadTours().catch(() => null)]);
+    state.photos = saved.photos;
+    state.tours = live ? mergeTours(live, saved.tours, saved.photos) : saved.tours;
+    if (!live) toast('Could not load the current tour list; showing saved tours', true);
+    render();
+  } catch (err) {
+    setStatus(err.message, 'err');
+  }
+}
+start();
+</script>
+</body>
+</html>
