@@ -153,7 +153,7 @@
 
   <div class="toolbar">
     <label class="btn-ghost upload-label" id="addLabel"><span id="addText">+ Add photos</span>
-      <input id="files" type="file" accept="image/jpeg,image/png" multiple hidden>
+      <input id="files" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
     </label>
     <button class="btn-ghost" id="selectAll">Select all</button>
   </div>
@@ -206,9 +206,11 @@ const CONFIG = {
   apiBase:     'https://fglerw59ak.execute-api.us-east-1.amazonaws.com/sandbox/portal',
   // Public tour list (same one create.html uses)
   toursUrl:    (window.ENV && window.ENV.API_BASE_URL ? window.ENV.API_BASE_URL : 'https://wycliffetravels.com') + '/tours',
-  cdn:         'https://d3he7xhdu9g98o.cloudfront.net',
+  // Photos are served from the site bucket through this site's own CloudFront
+  cdn:         location.origin,
   manifestKey: 'gallery/photos.json',
-  photoPrefix: 'gallery/photos/'
+  fullPx:  2000,   // longest side of the full-size image
+  thumbPx: 600     // longest side of the grid thumbnail
 };
 
 const ALL = '__all__', NONE = '__none__';
@@ -471,6 +473,42 @@ $('editDelete').onclick = () => {
 };
 
 // ── UPLOAD ────────────────────────────────────────────────────
+// Each photo is resized here (full + thumbnail, JPEG) and both files go
+// straight to S3. Re-encoding also drops camera metadata such as GPS.
+async function resizeToJpeg(file, maxPx, quality) {
+  const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+  const scale = Math.min(1, maxPx / Math.max(bmp.width, bmp.height));
+  const w = Math.max(1, Math.round(bmp.width * scale));
+  const h = Math.max(1, Math.round(bmp.height * scale));
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fff';               // PNG transparency -> white
+  ctx.fillRect(0, 0, w, h);
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(bmp, 0, 0, w, h);
+  bmp.close();
+  return new Promise((resolve, reject) =>
+    canvas.toBlob(b => b ? resolve(b) : reject(new Error('Could not convert the image')), 'image/jpeg', quality));
+}
+
+async function putFile(url, blob) {
+  const res = await fetch(url, { method: 'PUT', headers: { 'Content-Type': 'image/jpeg' }, body: blob });
+  if (!res.ok) throw new Error(`Upload failed (${res.status})`);
+}
+
+async function uploadOne(file) {
+  let full, thumb;
+  try {
+    [full, thumb] = await Promise.all([resizeToJpeg(file, CONFIG.fullPx, 0.85), resizeToJpeg(file, CONFIG.thumbPx, 0.8)]);
+  } catch {
+    throw new Error('This file could not be read as an image');
+  }
+  const r = await api('POST', '/gallery/upload-url', { fullSize: full.size, thumbSize: thumb.size });
+  await Promise.all([putFile(r.fullUrl, full), putFile(r.thumbUrl, thumb)]);
+  return r;
+}
+
 $('files').addEventListener('change', async e => {
   const files = [...e.target.files];
   e.target.value = '';
@@ -479,16 +517,13 @@ $('files').addEventListener('change', async e => {
   for (const file of files) {
     setStatus(`Uploading ${done + 1} of ${files.length}…`);
     try {
-      const { photoId, uploadUrl } = await api('POST', '/gallery/upload-url', { contentType: file.type, size: file.size });
-      const put = await fetch(uploadUrl, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file });
-      if (!put.ok) throw new Error(`Upload failed (${put.status})`);
+      const r = await uploadOne(file);
       state.photos.push({
-        photoId, title: '', description: '', tourIds: [...attach], sortOrder: state.photos.length,
-        thumbKey: `${CONFIG.photoPrefix}${photoId}/thumb.jpg`,
-        fullKey:  `${CONFIG.photoPrefix}${photoId}/full.jpg`,
-        uploadedAt: new Date().toISOString()
+        photoId: r.photoId, title: '', description: '', tourIds: [...attach], sortOrder: state.photos.length,
+        thumbKey: r.thumbKey, fullKey: r.fullKey, uploadedAt: new Date().toISOString()
       });
       done++;
+      render();
     } catch (err) {
       render();
       if (done) markDirty();
@@ -497,7 +532,7 @@ $('files').addEventListener('change', async e => {
       return;
     }
   }
-  render(); markDirty();
+  markDirty();
   toast(`${done} uploaded${attach.length ? ` to ${tourName(attach[0])}` : ''}. Press Save changes to keep them.`);
 });
 

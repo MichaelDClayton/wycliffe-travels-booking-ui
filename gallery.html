@@ -425,7 +425,9 @@
   // Match the CloudFront domain you set in GalleryMediaProcessor.java
   const CDN = 'https://d3he7xhdu9g98o.cloudfront.net';
   const GALLERY_MANIFEST = CDN + '/gallery/gallery.json';   // videos (GalleryMediaProcessor)
-  const PHOTO_MANIFEST   = CDN + '/gallery/photos.json';    // photos (portal-photos.html)
+  // Photos (portal-photos.html) are served from this site's own domain
+  const PHOTO_BASE       = location.origin;
+  const PHOTO_MANIFEST   = PHOTO_BASE + '/gallery/photos.json';
 
   // gallery.html?tour=<eventTypeId> shows only the photos attached to that tour
   const TOUR_FILTER = new URLSearchParams(location.search).get('tour');
@@ -456,8 +458,8 @@
       .sort((a, b) => a.sortOrder - b.sortOrder)
       .map(p => ({
         type: 'image',
-        src: `${CDN}/${p.fullKey}`,
-        thumb: `${CDN}/${p.thumbKey}`,
+        src: `${PHOTO_BASE}/${p.fullKey}`,
+        thumb: `${PHOTO_BASE}/${p.thumbKey}`,
         caption: p.title || '',
         tourIds: p.tourIds || []
       }));
